@@ -3,5 +3,29 @@
   "short_name": "short_url_ext",
   "version": "1.0.0",
   "manifest_version": 3,
-  "description": "short_url_ext"
+  "description": "short_url_ext",
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources" : [{
+      "id": "ruleset_1",
+      "enabled": false,
+      "path": "rules.json"
+    }]
+  }
 }
