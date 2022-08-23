@@ -1,0 +1,7 @@
+{
+  "name": "short_url_ext",
+  "short_name": "short_url_ext",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "short_url_ext"
+}
