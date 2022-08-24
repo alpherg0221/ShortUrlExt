@@ -2,11 +2,22 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>遷移確認</title>
-</head>
+    <title>遷移確認</title></head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <body>
-<h2>次のページに遷移してよろしいですか？</h2>
-<a href="https://example.com" id="dest" style="font-size: large">https://example.com</a>
+
+<div style="text-align: center">
+    <h1>次のページに遷移してよろしいですか？</h1>
+
+    <h3 href="https://example.com" id="dest" style="font-size: large">https://example.com</h3>
+
+    <div class="button-container">
+        <button id="cancel" type="button" class="btn btn-secondary">Cancel</button>
+        <button id="ok" type="button" class="btn btn-primary">OK</button>
+    </div>
+</div>
+
 <script src="confirm.js"></script>
 </body>
 </html>
