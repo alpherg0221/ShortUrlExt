@@ -2,7 +2,7 @@
   {
     "id": 1,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": { "type": "redirect", "redirect": { "extensionPath": "/confirm.html" } },
     "condition": {"regexFilter": ".*", "resourceTypes": ["main_frame"] }
   }
 ]
