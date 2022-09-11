@@ -1,0 +1,1 @@
+export const shortUrlRegExp = RegExp("https?://.{2,4}\\..{2,4}/.*|https?://tinyurl.com/.*");

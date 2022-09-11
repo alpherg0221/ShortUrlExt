@@ -1,23 +1,31 @@
+import {shortUrlRegExp} from "./shortUrlRegExp.js";
+
 chrome.webRequest.onHeadersReceived.addListener(async details => {
     // 300番台かチェック
     if (Math.floor(details.statusCode / 100) === 3) {
         // 現在のタブ (リダイレクトがブロックされた) を取得
         let [tabBlocked] = await chrome.tabs.query({active: true, currentWindow: true});
 
-        // about:blankならタブを閉じる
-        // それ以外なら読み込みを停止
-        if (tabBlocked.url === "") {
-            await chrome.tabs.remove(tabBlocked.id);
-        } else {
-            await chrome.tabs.discard(tabBlocked.id);
+        // ブロックされたURLを取得
+        let blockedUrl = details.url;
+
+        // ブロックされたURLが短縮URLだった場合の処理
+        if (shortUrlRegExp.test(blockedUrl)) {
+            if (blockedUrl === "") {
+                // about:blankならタブを閉じる
+                await chrome.tabs.remove(tabBlocked.id);
+            } else {
+                // それ以外なら読み込みを停止
+                await chrome.tabs.discard(tabBlocked.id);
+            }
+
+            // Todo:絶対URLで取得する (現在は相対URLの場合もある)
+            // 遷移先URLを取得
+            let [dest] = details.responseHeaders.filter(header => header.name === "location");
+
+            // 確認ページを開く
+            await chrome.tabs.create({url: `./confirm/confirm.html#${dest.value}`});
         }
-
-        // Todo:絶対URLで取得する (現在は相対URLの場合もある)
-        // 遷移先URLを取得
-        let [dest] = details.responseHeaders.filter(header => header.name === "location");
-
-        // 確認ページを開く
-        await chrome.tabs.create({url: `./confirm/confirm.html#${dest.value}`});
     }
 }, {
     'urls': ['<all_urls>'], 'types': ['main_frame']
@@ -43,15 +51,16 @@ function keepAliveForced() {
 
 async function keepAlive() {
     if (lifeline) return;
-    for (const tab of await chrome.tabs.query({ url: '*://*/*' })) {
+    for (const tab of await chrome.tabs.query({url: '*://*/*'})) {
         try {
             await chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                func: () => chrome.runtime.connect({ name: 'keepAlive' }),
+                target: {tabId: tab.id},
+                func: () => chrome.runtime.connect({name: 'keepAlive'}),
             });
             chrome.tabs.onUpdated.removeListener(retryOnTabUpdate);
             return;
-        } catch (e) {}
+        } catch (e) {
+        }
     }
     chrome.tabs.onUpdated.addListener(retryOnTabUpdate);
 }
