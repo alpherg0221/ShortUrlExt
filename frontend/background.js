@@ -11,7 +11,7 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
 
         // ブロックされたURLが短縮URLだった場合の処理
         if (shortUrlRegExp.test(blockedUrl)) {
-            if (blockedUrl === "") {
+            if (tabBlocked.url === "") {
                 // about:blankならタブを閉じる
                 await chrome.tabs.remove(tabBlocked.id);
             } else {
