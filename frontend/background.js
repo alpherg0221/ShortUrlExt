@@ -1,4 +1,5 @@
 import {shortUrlRegExp} from "./shortUrlRegExp.js";
+import {Whitelist} from "./whitelist.js";
 
 chrome.webRequest.onHeadersReceived.addListener(async details => {
     // 300番台かチェック
@@ -23,8 +24,13 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
             // 遷移先URLを取得
             let [dest] = details.responseHeaders.filter(header => header.name === "location");
 
-            // 確認ページを開く
-            await chrome.tabs.create({url: `./confirm/confirm.html#${dest.value}`});
+            if ((await Whitelist.getWhitelist()).includes(dest.value)) {
+                // whitelistに遷移先URLが含まれればそのまま遷移
+                await chrome.tabs.create({url: dest.value});
+            } else {
+                // whitelistに遷移先URLが含まれなければ確認ページを開く
+                await chrome.tabs.create({url: `./confirm/confirm.html#${dest.value}`});
+            }
         }
     }
 }, {

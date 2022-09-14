@@ -1,4 +1,6 @@
 // #移行の文字列を取得
+import {Whitelist} from "../whitelist.js";
+
 let dest = window.location.hash.substring(1);
 
 // h3タグ (id=dest) を取得
@@ -24,3 +26,15 @@ let thumbnailButton = document.getElementById("thumbnail");
 thumbnailButton.onclick = async () => {
     thumbnailImg.src = `https://capture.heartrails.com/400x400/cool/shorten?${dest}`;
 };
+
+// Whitelistボタン
+let whitelistButton = document.getElementById("whitelist");
+whitelistButton.onclick = async () => {
+    // whitelistに現在のdestをセット
+    await Whitelist.setWhitelist(dest);
+    if ((await Whitelist.getWhitelist()).includes(dest)) {
+        alert("登録しました");
+    } else {
+        alert("登録に失敗しました");
+    }
+}
