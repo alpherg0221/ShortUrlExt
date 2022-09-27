@@ -23,8 +23,9 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
             // Todo:絶対URLで取得する (現在は相対URLの場合もある)
             // 遷移先URLを取得
             let [dest] = details.responseHeaders.filter(header => header.name === "location");
+            let domain = (new URL(dest.value)).hostname;
 
-            if ((await Whitelist.getWhitelist()).includes(dest.value)) {
+            if ((await Whitelist.getWhitelist()).includes(domain)) {
                 // whitelistに遷移先URLが含まれればそのまま遷移
                 await chrome.tabs.create({url: dest.value});
             } else {

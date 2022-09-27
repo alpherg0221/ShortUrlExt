@@ -30,10 +30,14 @@ thumbnailButton.onclick = async () => {
 // Whitelistボタン
 let whitelistButton = document.getElementById("whitelist");
 whitelistButton.onclick = async () => {
-    // whitelistに現在のdestをセット
-    await Whitelist.setWhitelist(dest);
-    if ((await Whitelist.getWhitelist()).includes(dest)) {
-        alert("登録しました");
+    // destからドメインを取得
+    let domain = (new URL(dest)).hostname;
+
+    // whitelistに現在のdestのドメインをセット
+    await Whitelist.setWhitelist(domain);
+    if ((await Whitelist.getWhitelist()).includes(domain)) {
+        alert("ホワイトリストに登録しました．移動します．");
+        window.location.href = dest;
     } else {
         alert("登録に失敗しました");
     }
