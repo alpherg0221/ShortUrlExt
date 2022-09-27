@@ -27,18 +27,25 @@ thumbnailButton.onclick = async () => {
     thumbnailImg.src = `https://capture.heartrails.com/400x400/cool/shorten?${dest}`;
 };
 
-// Whitelistボタン
-let whitelistButton = document.getElementById("whitelist");
-whitelistButton.onclick = async () => {
+// Whitelist_moveボタン
+let whitelistMoveButton = document.getElementById("whitelist_move");
+whitelistMoveButton.onclick = async () => {
     // destからドメインを取得
     let domain = (new URL(dest)).hostname;
 
     // whitelistに現在のdestのドメインをセット
-    await Whitelist.setWhitelist(domain);
+    await Whitelist.add(domain);
     if ((await Whitelist.getWhitelist()).includes(domain)) {
         alert("ホワイトリストに登録しました．移動します．");
         window.location.href = dest;
     } else {
         alert("登録に失敗しました");
     }
+}
+
+// Whitelist_editボタン
+let whitelistEditButton = document.getElementById("whitelist_edit");
+whitelistEditButton.onclick = async () => {
+    // whitelistページに移動
+    window.location.href = '../whitelist/editor/whitelistEditor.html';
 }

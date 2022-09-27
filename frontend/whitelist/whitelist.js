@@ -10,12 +10,22 @@ export class Whitelist {
         }
     }
 
-    // whitelistに値をセットするメソッド
-    static async setWhitelist(newValue) {
+    // whitelistに値を追加するメソッド
+    static async add(newValue) {
         // whitelistを取得
         const whitelist = await Whitelist.getWhitelist();
         // 取得したwhitelistに値が含まれていなければ追加
         if (!whitelist.includes(newValue)) whitelist.push(newValue);
+        // whitelistを更新
+        await chrome.storage.local.set({"whitelist": whitelist});
+    }
+
+    // whitelistから値を削除するメソッド
+    static async delete(deleteValue) {
+        // whitelistを取得
+        let whitelist = await Whitelist.getWhitelist();
+        // 取得したwhitelistに値が含まれていれば削除
+        if (whitelist.includes(deleteValue)) whitelist = whitelist.filter(e => e !== deleteValue);
         // whitelistを更新
         await chrome.storage.local.set({"whitelist": whitelist});
     }
