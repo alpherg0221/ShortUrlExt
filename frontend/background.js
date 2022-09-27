@@ -1,5 +1,5 @@
 import {shortUrlRegExp} from "./shortUrlRegExp.js";
-import {Whitelist} from "./whitelist.js";
+import {Whitelist} from "./whitelist/whitelist.js";
 
 chrome.webRequest.onHeadersReceived.addListener(async details => {
     // 300番台かチェック

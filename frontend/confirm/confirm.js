@@ -1,5 +1,5 @@
 // #移行の文字列を取得
-import {Whitelist} from "../whitelist.js";
+import {Whitelist} from "../whitelist/whitelist.js";
 
 let dest = window.location.hash.substring(1);
 
