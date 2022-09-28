@@ -1,4 +1,3 @@
-from email.mime import base
 from fastapi import APIRouter
 from fastapi import FastAPI
 import os
