@@ -23,8 +23,9 @@ body {
     color: var(--on_primary);
 }
 
-#table {
+.table {
     margin-top: 50px;
+    border-color: #A0A0A0;
 }
 
 .container {

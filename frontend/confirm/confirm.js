@@ -43,10 +43,3 @@ whitelistMoveButton.onclick = async () => {
         alert("登録に失敗しました");
     }
 }
-
-// Whitelist_editボタン
-let whitelistEditButton = document.getElementById("whitelist_edit");
-whitelistEditButton.onclick = async () => {
-    // whitelistページに移動
-    window.location.href = '../whitelist/editor/whitelistEditor.html';
-}
