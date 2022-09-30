@@ -1,21 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>Whitelist</title></head>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>ホワイトリストを編集</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css"
+          href="../../library/http_unpkg.com_material-components-web@latest_dist_material-components-web.css">
+    <script src="../../library/http_unpkg.com_material-components-web@latest_dist_material-components-web.js"></script>
+    <link rel="stylesheet" type="text/css" href="whitetlistEditor.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
 <body>
-<table class="table" id="table">
-  <thead>
-  <tr>
-    <th>domain</th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody id="tbody">
-  </tbody>
-</table>
+
+<header class="mdc-top-app-bar">
+    <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <span class="mdc-top-app-bar__title">ホワイトリストの編集</span>
+        </section>
+    </div>
+</header>
+
+<main class="mdc-top-app-bar--fixed-adjust">
+    <div class="container">
+        削除ボタンを押すと確認なしで削除されます
+
+        <table class="table" id="table">
+            <thead>
+            <tr>
+                <th style="width: 80%; text-align: center">domain</th>
+                <th style="width: 20%"></th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+    </div>
+</main>
+
 <script src="whitelistEditor.js" type="module"></script>
 <script src="../whitelist.js" type="module"></script>
 </body>

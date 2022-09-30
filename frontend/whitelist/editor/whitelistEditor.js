@@ -19,23 +19,50 @@ window.addEventListener("DOMContentLoaded", async () => {
         // trにtd要素を追加
         tr.appendChild(td_domain);
 
-        // ボタンを表示する
-        let td_button = document.createElement("td");
-        let button = document.createElement("button");
-        // 削除ボタンをクリックしたときの動作
-        button.onclick = () => {
-            // 内部のホワイトリストから削除
-            Whitelist.delete(whitelist[i]);
-            // 画面上から削除
-            let target = document.getElementById(`tr${i}`);
-            tbody.removeChild(target);
-        }
-        button.innerHTML = "削除"
-        // ボタンとtd要素を追加
-        td_button.appendChild(button);
-        tr.appendChild(td_button);
+        let button = await Button(
+            "削除",
+            "delete",
+            () => {
+                // 内部のホワイトリストから削除
+                Whitelist.delete(whitelist[i]);
+                // 画面上から削除
+                let target = document.getElementById(`tr${i}`);
+                tbody.removeChild(target);
+            }
+        )
+        tr.appendChild(button);
 
         // tbodyにtr要素を追加
         tbody.appendChild(tr);
     }
 });
+
+// ボタンを作る関数
+async function Button(text, icon, onClick) {
+    let td_button = document.createElement("td");
+    let button = document.createElement("button");
+    let buttonText = document.createElement("span");
+    let buttonIcon = document.createElement("i");
+    let buttonRipple = document.createElement("span");
+
+    button.className = "mdc-button mdc-button--raised mdc-button--leading";
+    button.id = "deleteButton";
+    button.onclick = onClick;
+
+    buttonText.className = "mdc-button__label";
+    buttonText.textContent = text;
+
+    buttonIcon.className = "material-icons mdc-button__icon";
+    buttonIcon.ariaHidden = "true";
+    buttonIcon.textContent = icon;
+
+    buttonRipple.className = "mdc-button__ripple";
+
+    // ボタンとtd要素を追加
+    button.appendChild(buttonRipple);
+    button.appendChild(buttonIcon);
+    button.appendChild(buttonText);
+    td_button.appendChild(button);
+
+    return td_button;
+}
