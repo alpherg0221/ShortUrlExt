@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y libopencv-dev
 
 COPY main.py /app/
 
