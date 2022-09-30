@@ -11,5 +11,8 @@ RUN apt-get install -y libopencv-dev
 COPY main.py /app/
 
 COPY logic/ /app/logic
+COPY task/ /app/task
+
+ENV GOOGLE_APPLICATION_CREDENTIALS /app/task/mws2022-cred.json
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

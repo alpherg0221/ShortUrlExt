@@ -6,8 +6,8 @@ import sys
 import base64
 import hashlib
 import json
-sys.path.append("./ipc/")
-import dispatcher
+
+from task import dispatcher
 
 router = APIRouter()
 
