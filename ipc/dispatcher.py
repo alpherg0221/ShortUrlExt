@@ -8,13 +8,13 @@ import hashlib
 import json
 
 from google.cloud import firestore
-from google.cloud import storage
+
+import filestore
 
 
 class Dispatcher:
     def __init__(self):
         db = firestore.Client(project='mws2022-364010')
-        storage.Client(project='mws2022-364010')
 
         col_tasks = db.collection('tasks').where('status', '==', 'DONE')
         self.event = threading.Event()
@@ -22,6 +22,7 @@ class Dispatcher:
         def on_snapshot(col_snapshot, changes, read_time):
             self.col_snapshot = col_snapshot
             self.event.set()
+            self.event = threading.Event()
 
         self.watch = col_tasks.on_snapshot(on_snapshot)
 
@@ -51,12 +52,8 @@ class Dispatcher:
                 result = db.collection("tasks").document(
                     self.task).get().to_dict()
                 self.store_cache(self.cache_token, result)
-
-    def download_thumbnail(self, filename):
-        fs = storage.Client()
-        bucket = fs.bucket("mws2022-thumbnail")
-        blob = bucket.blob(filename)
-        blob.download_to_filename(filename)
+                return result
+            sleep(0.5)
 
     def store_cache(self, token, result):
         db = firestore.Client()
@@ -85,11 +82,12 @@ class Dispatcher:
 if __name__ == "__main__":
     distatcher = Dispatcher()
 
-    distatcher.register({"url": "http://google.com", "thumbnail": "test"})
+    distatcher.register({"url": "http://google.com",
+                        "thumbnail": f"{randint(1, 1e8)}"})
     completed = distatcher.complete()
     result = json.loads(completed["result"])
     if "thumbnail" in result:
-        distatcher.download_thumbnail(result["thumbnail"])
+        filestore.pull(result["thumbnail"])
     print(completed["result"])
 
     # distatcher.close()
