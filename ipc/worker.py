@@ -1,15 +1,6 @@
 
-import atexit
-import datetime
-from random import randint
-import threading
-from time import sleep
-import hashlib
 import subprocess
 import json
-
-from google.cloud import firestore
-from google.cloud import storage
 
 import filestore
 from task import Task, Worker
@@ -72,6 +63,8 @@ if __name__ == "__main__":
         w.attach()
         while True:
             doc_id = Task.receive()
+            if len(doc_id) == 0:
+                continue
             work(ID, doc_id)
 
     except Exception as e:

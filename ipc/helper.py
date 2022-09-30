@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import hashlib
 import datetime
 
+
 @dataclass
 class firestore:
     project: str
@@ -37,4 +38,8 @@ def ID():
 
 
 def random_str():
-    return hashlib.sha256(f'{datetime.datetime.now()}'.encode()).hexdigest()[:10]
+    return sha256(f'{datetime.datetime.now()}')[:10]
+
+
+def sha256(seed):
+    return hashlib.sha256(seed.encode()).hexdigest()

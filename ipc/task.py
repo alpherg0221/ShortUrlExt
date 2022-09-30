@@ -1,16 +1,37 @@
 import threading
 from random import randint
 from queue import Queue
+import json
+from time import sleep
 
 from google.cloud import firestore
 
-from helper import CONFIG
+from helper import CONFIG, sha256
 
 firestore.Client(project=CONFIG.firestore.project)
 
 
+class Cache:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def load(token):
+        db = firestore.Client()
+        cache = db.collection("cache").document(token).get()
+        if cache.exists:
+            return cache.to_dict()
+        return None
+
+    @staticmethod
+    def store(token, value):
+        db = firestore.Client()
+        cache_doc = db.collection("cache").document(token)
+        cache_doc.set(value)
+
+
 class Task:
-    def __init__(self, worker_id, task_id):
+    def __init__(self, worker_id="", task_id=""):
         self.worker_id = worker_id
         self.task_id = task_id
         pass
@@ -33,9 +54,48 @@ class Task:
             return True
 
         result = update_in_transaction(tx, doc_task)
-        print(result)
 
         return result
+
+    def run(self, params):
+        db = firestore.Client()
+
+        col_tasks = db.collection('tasks').where('status', '==', 'DONE')
+
+        task_info = {
+            "status": "NEW",
+            "params": json.dumps(params)
+        }
+
+        cache_token = sha256(json.dumps(task_info))
+
+        cache = Cache.load(cache_token)
+        if not cache == None:
+            return cache
+
+        _, result = db.collection("tasks").add(task_info)
+        task_id = result.id
+
+        callback_done = threading.Event()
+
+        chan = Queue()
+
+        def on_snapshot(col_snapshot, changes, read_time):
+            chan.put(col_snapshot)
+            callback_done.set()
+
+        self.watch = col_tasks.on_snapshot(on_snapshot)
+
+        while True:
+            callback_done.wait()
+            col_snapshot = chan.get()
+            task = list(filter(lambda e: e.id == task_id, col_snapshot))
+            if len(task) == 1:
+                result = db.collection("tasks").document(
+                    task_id).get().to_dict()
+                Cache.store(cache_token, result)
+                return result
+            sleep(0.5)
 
     def detail(self):
         db = firestore.Client()
