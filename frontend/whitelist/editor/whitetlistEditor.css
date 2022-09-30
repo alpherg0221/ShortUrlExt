@@ -1,0 +1,50 @@
+:root {
+    --primary: #4355b9;
+    --on_primary: #FFFFFF;
+    --secondary: #006d41;
+    --on_secondary: #FFFFFF;
+    --error: #ba1a1a;
+    --on_error: #ffffff;
+    --surface_variant: #e3e1ec;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    background-color: #FFFBFE;
+    color: #1C1B1F;
+    height: 100%;
+}
+
+main {
+    height: 100%;
+}
+
+.mdc-top-app-bar {
+    background-color: var(--primary);
+    color: var(--on_primary);
+}
+
+#table {
+    margin-top: 50px;
+}
+
+.container {
+    background-color: #e3e1ec;
+    width: 840px;
+    height: 100%;
+    padding-top: 30px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+body > main > .container {
+    height: 100%;
+}
+
+#deleteButton {
+    background-color: var(--error);
+    color: var(--on_error);
+}
