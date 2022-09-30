@@ -25,8 +25,8 @@ def trace_handler(url): #shortURLがくる
     inf = json.loads(completed["result"])
 
     # コマンドの出力をjsonの形式にする(outputの形式が分かり次第いろいろ変更)
-    keys = ["from_url", "term_url", "chains", "thums"]
-    values = [inf["src"], inf["dst"], inf["chain"], inf["thumbnail"]]
+    keys = ["from_url", "term_url", "chains", "thumbnail"]
+    values = [inf["src"], inf["dst"], inf["chain"], thumbnail]
     output_dict = dict(zip(keys, values))
     return output_dict
 
