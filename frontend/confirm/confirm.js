@@ -22,9 +22,10 @@ cancelButton.onclick = () => {
 let thumbnailImg = document.getElementById("thumbnail_img");
 
 // Thumbnailボタン
-let thumbnailButton = document.getElementById("thumbnail");
+let thumbnailButton = document.getElementById("thumbnail_img");
 thumbnailButton.onclick = async () => {
     thumbnailImg.src = `https://capture.heartrails.com/400x400/cool/shorten?${dest}`;
+    thumbnailButton.onclick = null;
 };
 
 // Whitelist_moveボタン

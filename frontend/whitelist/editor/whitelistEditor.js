@@ -15,6 +15,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         // ドメイン名を表示する
         let td_domain = document.createElement("td");
+        td_domain.style.verticalAlign = "middle";
         td_domain.innerHTML = whitelist[i];
         // trにtd要素を追加
         tr.appendChild(td_domain);
@@ -35,34 +36,29 @@ window.addEventListener("DOMContentLoaded", async () => {
         // tbodyにtr要素を追加
         tbody.appendChild(tr);
     }
+
+    // const iconButtonRipple = new MDCRipple(document.querySelector(".mdc-icon-button"))
+    // iconButtonRipple.unbounded = true;
 });
 
 // ボタンを作る関数
 async function Button(text, icon, onClick) {
-    let td_button = document.createElement("td");
+    let tdButton = document.createElement("td");
     let button = document.createElement("button");
-    let buttonText = document.createElement("span");
-    let buttonIcon = document.createElement("i");
     let buttonRipple = document.createElement("span");
 
-    button.className = "mdc-button mdc-button--raised mdc-button--leading";
+    tdButton.style.textAlign = "center";
+
+    button.className = "mdc-icon-button material-icons";
     button.id = "deleteButton";
     button.onclick = onClick;
-
-    buttonText.className = "mdc-button__label";
-    buttonText.textContent = text;
-
-    buttonIcon.className = "material-icons mdc-button__icon";
-    buttonIcon.ariaHidden = "true";
-    buttonIcon.textContent = icon;
+    button.textContent = icon;
 
     buttonRipple.className = "mdc-button__ripple";
 
     // ボタンとtd要素を追加
     button.appendChild(buttonRipple);
-    button.appendChild(buttonIcon);
-    button.appendChild(buttonText);
-    td_button.appendChild(button);
+    tdButton.appendChild(button);
 
-    return td_button;
+    return tdButton;
 }

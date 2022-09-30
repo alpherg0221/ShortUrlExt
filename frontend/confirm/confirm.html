@@ -9,31 +9,28 @@
 <body>
 
 <div style="text-align: center">
-    <h1>次のページに遷移してよろしいですか？</h1>
-
-    <h3 href="https://example.com" id="dest" style="font-size: large">https://example.com</h3>
+    <h4>次のページに移動しますか？</h4>
+    <h3>タイトル(仮)</h3>
+    <h1 id="dest">https://example.com</h1>
 
     <div class="button-container">
-        <button id="cancel" type="button" class="btn btn-secondary">Cancel</button>
-        <button id="ok" type="button" class="btn btn-primary">OK</button>
+        <button class="mdc-button mdc-button--raised" id="cancel">
+            <span class="mdc-button__ripple"></span>
+            <span class="mdc-button__label">Cancel</span>
+        </button>
+        <button class="mdc-button mdc-button--raised" id="ok">
+            <span class="mdc-button__ripple"></span>
+            <span class="mdc-button__label">OK</span>
+        </button>
     </div>
+
 
     <div style="height: 20px;"></div>
 
-    <div class="button-container">
-        <button id="thumbnail" type="button" class="btn btn-info">サムネイルを表示</button>
+
+    <div>
+        <img id="thumbnail_img" src="placeholder.png" alt="" width="600" height="600">
     </div>
-
-    <div style="height: 20px;"></div>
-
-    <div class="button-container">
-        <button id="whitelist_move" type="button" class="btn btn-info">遷移先のドメインをホワイトリストに追加して移動</button>
-        <button id="whitelist_edit" type="button" class="btn btn-info">ホワイトリストを編集</button>
-    </div>
-
-    <div style="height: 20px;"></div>
-
-    <img id="thumbnail_img" src="">
 </div>
 
 <script src="confirm.js" type="module"></script>

@@ -1,0 +1,43 @@
+:root {
+    --primary: #4355b9;
+    --on_primary: #FFFFFF;
+    --secondary: #006d41;
+    --on_secondary: #FFFFFF;
+    --error: #ba1a1a;
+    --on_error: #ffffff;
+    --surface_variant: #e3e1ec;
+    --outline: #767680;
+}
+
+h3, h4 {
+    margin-top: 30px;
+}
+
+h1 {
+    margin-top: 10px;
+}
+
+.button-container {
+    margin-top: 30px;
+}
+
+#cancel {
+    background-color: var(--outline);
+    margin-right: 30px;
+    width: 100px;
+}
+
+#ok {
+    background-color: var(--primary);
+    width: 100px;
+}
+
+#whitelist_move {
+    color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+#thumbnail_img {
+    margin-top: 30px;
+    cursor: pointer;
+}

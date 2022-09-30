@@ -37,8 +37,12 @@ body {
     padding-right: 100px;
 }
 
+th, td {
+    font-size: 20px;
+}
+
 
 #deleteButton {
-    background-color: var(--error);
-    color: var(--on_error);
+    border-color: var(--error);
+    color: var(--error);
 }
