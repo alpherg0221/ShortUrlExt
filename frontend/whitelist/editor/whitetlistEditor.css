@@ -8,17 +8,13 @@
     --surface_variant: #e3e1ec;
 }
 
-html {
+html, main {
     height: 100%;
 }
 
 body {
     background-color: #FFFBFE;
     color: #1C1B1F;
-    height: 100%;
-}
-
-main {
     height: 100%;
 }
 
@@ -34,15 +30,13 @@ main {
 .container {
     background-color: #e3e1ec;
     width: 840px;
-    height: 100%;
+    min-height: 100%;
+    height: auto;
     padding-top: 30px;
     padding-left: 100px;
     padding-right: 100px;
 }
 
-body > main > .container {
-    height: 100%;
-}
 
 #deleteButton {
     background-color: var(--error);
