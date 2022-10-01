@@ -1,0 +1,37 @@
+:root {
+    --primary: #4355b9;
+    --on_primary: #FFFFFF;
+    --secondary: #006d41;
+    --on_secondary: #FFFFFF;
+    --error: #ba1a1a;
+    --on_error: #ffffff;
+    --surface: #fefbff;
+    --on_surface: #1b1b1f;
+    --surface_variant: #e3e1ec;
+    --outline: #767680;
+}
+
+html {
+    height: auto;
+    width: 250px;
+}
+
+body {
+    background-color: var(--surface);
+    color: var(--on_surface);
+}
+
+.button-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#whitelist_edit {
+    background-color: var(--primary);
+    width: 200px;
+}
+
+#help {
+    background-color: var(--secondary);
+    width: 200px;
+}

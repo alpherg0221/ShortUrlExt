@@ -5,6 +5,8 @@
     --on_secondary: #FFFFFF;
     --error: #ba1a1a;
     --on_error: #ffffff;
+    --surface: #fefbff;
+    --on_surface: #1b1b1f;
     --surface_variant: #e3e1ec;
 }
 
@@ -13,8 +15,8 @@ html, main {
 }
 
 body {
-    background-color: #FFFBFE;
-    color: #1C1B1F;
+    background-color: var(--surface);
+    color: var(--on_surface);
     height: 100%;
 }
 

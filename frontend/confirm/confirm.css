@@ -5,8 +5,14 @@
     --on_secondary: #FFFFFF;
     --error: #ba1a1a;
     --on_error: #ffffff;
+    --surface: #fefbff;
+    --on_surface: #1b1b1f;
     --surface_variant: #e3e1ec;
     --outline: #767680;
+}
+
+body {
+    background-color: var(--surface);
 }
 
 h3, h4 {
