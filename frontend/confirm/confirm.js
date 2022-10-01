@@ -1,45 +1,77 @@
 // #移行の文字列を取得
 import {Whitelist} from "../whitelist/whitelist.js";
 
-let dest = window.location.hash.substring(1);
+// 遷移先URL
+const dest = window.location.hash.substring(1);
+// URLエンコードした遷移先URL
+const encodedDest = encodeURIComponent(dest);
 
-// h3タグ (id=dest) を取得
-let destElem = document.getElementById("dest");
-// h3タグの表示する文字を書き換え
-destElem.innerText = dest;
+// サークルインジケータ
+const circularProgress = document.querySelector('.progress');
 
-// OKボタン
-let okButton = document.getElementById("ok");
-okButton.onclick = () => window.location.href = dest;
+// ボタンの適用
+await setButton();
 
-// Cancelボタン
-let cancelButton = document.getElementById("cancel");
-cancelButton.onclick = () => {
-    window.open("about:blank", "_self").close();
-};
+setTimeout(() => {
+    circularProgress.remove();
+}, 4000);
 
-// Thumbnailのimg
-let thumbnailImg = document.getElementById("thumbnail_img");
+async function setButton() {
+    // OKボタン
+    const okButton = document.getElementById("ok");
+    okButton.onclick = () => window.location.href = dest;
 
-// Thumbnailボタン
-let thumbnailButton = document.getElementById("thumbnail_img");
-thumbnailButton.onclick = async () => {
-    thumbnailImg.src = `https://capture.heartrails.com/400x400/cool/shorten?${dest}`;
-    thumbnailButton.onclick = null;
-};
+    // Cancelボタン
+    const cancelButton = document.getElementById("cancel");
+    cancelButton.onclick = () => window.open("about:blank", "_self").close();
 
-// Whitelist_moveボタン
-let whitelistMoveButton = document.getElementById("whitelist_move");
-whitelistMoveButton.onclick = async () => {
-    // destからドメインを取得
-    let domain = (new URL(dest)).hostname;
+    // Whitelist_moveボタン
+    const whitelistMoveButton = document.getElementById("whitelist_move");
+    whitelistMoveButton.onclick = async () => {
+        // destからドメインを取得
+        const domain = (new URL(dest)).hostname;
 
-    // whitelistに現在のdestのドメインをセット
-    await Whitelist.add(domain);
-    if ((await Whitelist.getWhitelist()).includes(domain)) {
-        alert("ホワイトリストに登録しました．移動します．");
+        // whitelistに現在のdestのドメインをセット
+        await Whitelist.add(domain);
+        if ((await Whitelist.getWhitelist()).includes(domain)) {
+            dialog.open();
+        } else {
+            alert("登録に失敗しました");
+        }
+    };
+
+    // Google透明性レポートボタン
+    const googleButton = document.getElementById("google_button");
+    googleButton.href = `https://transparencyreport.google.com/safe-browsing/search?url=${encodedDest}&hl=ja-jp`;
+
+    // Norton Safe Webボタン
+    const nortonButton = document.getElementById("norton_button");
+    nortonButton.href = `https://safeweb.norton.com/report/show?url=${encodedDest}`;
+
+    // Kaspersky Threat Intelligence Portalボタン
+    const kasperskyButton = document.getElementById("kaspersky_button");
+    kasperskyButton.href = `https://opentip.kaspersky.com/${encodedDest}/?tab=lookup`
+
+    // ダイアログを取得
+    const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
+    dialog.listen('MDCDialog:closing', () => {
         window.location.href = dest;
-    } else {
-        alert("登録に失敗しました");
-    }
+    });
+
+    // Rippleの適用
+    const Ripple = mdc.ripple.MDCRipple;
+    Ripple.attachTo(okButton);
+    Ripple.attachTo(cancelButton);
+    Ripple.attachTo(whitelistMoveButton);
+}
+
+async function setInfo() {
+    // ページタイトル要素
+    const titleElem = document.getElementById("title");
+    // URL要素
+    const destElem = document.getElementById("dest");
+    // ページの説明要素
+    const deskElem = document.getElementById("description");
+    // サムネイル要素
+    const thumbnailImg = document.getElementById("thumbnail_img");
 }

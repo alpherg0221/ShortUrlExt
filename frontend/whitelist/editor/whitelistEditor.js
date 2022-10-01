@@ -37,8 +37,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         tbody.appendChild(tr);
     }
 
-    // const iconButtonRipple = new MDCRipple(document.querySelector(".mdc-icon-button"))
-    // iconButtonRipple.unbounded = true;
+    document.querySelectorAll(".mdc-icon-button").forEach((e) => {
+        const iconButtonRipple = new mdc.ripple.MDCRipple(e);
+        iconButtonRipple.unbounded = true;
+    });
 });
 
 // ボタンを作る関数
@@ -49,7 +51,7 @@ async function Button(text, icon, onClick) {
 
     tdButton.style.textAlign = "center";
 
-    button.className = "mdc-icon-button material-icons";
+    button.className = "mdc-icon-button material-icons mdc-ripple-surface";
     button.id = "deleteButton";
     button.onclick = onClick;
     button.textContent = icon;

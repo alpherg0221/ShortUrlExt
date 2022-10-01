@@ -1,4 +1,6 @@
 :root {
+    --mdc-theme-primary: #4355b9;
+    --mdc-theme-secondary: #006d41;
     --primary: #4355b9;
     --on_primary: #FFFFFF;
     --secondary: #006d41;
@@ -46,4 +48,44 @@ h1 {
 #thumbnail_img {
     margin-top: 30px;
     cursor: pointer;
+}
+
+#dialog_button {
+    color: var(--primary);
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.security {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.mdc-circular-progress {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+}
+
+.progress {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width:100%;
+    height:100%;
+    background-color: rgba(255,255,255,0.85);
+}
+
+.progress-message {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    top: 35%;
 }

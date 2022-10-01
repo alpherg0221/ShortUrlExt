@@ -44,7 +44,6 @@ th, td {
     font-size: 20px;
 }
 
-
 #deleteButton {
     border-color: var(--error);
     color: var(--error);

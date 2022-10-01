@@ -5,43 +5,127 @@
     <title>遷移確認</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css"
-          href="../library/http_unpkg.com_material-components-web@latest_dist_material-components-web.css">
-    <script src="../library/http_unpkg.com_material-components-web@latest_dist_material-components-web.js"></script>
+    <!-- material design -->
+    <link rel="stylesheet" type="text/css" href="../library/material-components-web.min.css">
+    <script src="../library/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" type="text/css" href="confirm.css">
 </head>
 <body>
 
-<div style="text-align: center">
-    <h4>次のページに移動しますか？</h4>
-    <h3>タイトル(仮)</h3>
-    <h1 id="dest">https://example.com</h1>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>次のページを表示しますか？</h4>
+            <div class="button-container">
+                <button class="mdc-button mdc-button--raised" id="cancel">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button class="mdc-button mdc-button--raised" id="ok">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">OK</span>
+                </button>
+            </div>
 
-    <div class="button-container">
-        <button class="mdc-button mdc-button--raised" id="cancel">
-            <span class="mdc-button__ripple"></span>
-            <span class="mdc-button__label">Cancel</span>
-        </button>
-        <button class="mdc-button mdc-button--raised" id="ok">
-            <span class="mdc-button__ripple"></span>
-            <span class="mdc-button__label">OK</span>
-        </button>
-    </div>
+            <div class="button-container">
+                <button class="mdc-button mdc-button--outlined" id="whitelist_move">
+                    <span class="mdc-button__label">ホワイトリストに追加して表示</span>
+                </button>
+            </div>
 
+            <h3>ページ情報</h3>
+            <h5>ページタイトル</h5>
+            <h3 id="title">&nbsp;</h3>
+            <h5>URL</h5>
+            <h3 id="dest">&nbsp;</h3>
 
-    <div class="button-container">
-        <button class="mdc-button mdc-button--outlined" id="whitelist_move">
-            <span class="mdc-button__ripple"></span>
-            <span class="mdc-button__label">ホワイトリストに追加して移動</span>
-        </button>
-    </div>
+            <h5>ページの説明</h5>
+            <div id="description">
+                <p>&nbsp;</p>
+            </div>
+            <br>
+        </div>
 
+        <div class="col-md-6">
+            <h3>安全性チェック</h3>
+            <div class="security">
+                <a target="_blank" id="google_button">
+                    Google透明性レポート
+                    <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
+                </a>
+            </div>
+            <div class="security">
+                <a target="_blank" id="norton_button">
+                    Norton Safe Web
+                    <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
+                </a>
+            </div>
+            <div class="security">
+                <a target="_blank" id="kaspersky_button">
+                    Kaspersky Threat Intelligence Portal
+                    <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
+                </a>
+            </div>
 
-    <div>
-        <img id="thumbnail_img" src="placeholder.png" alt="" width="600" height="600">
+            <img class="img-fluid" id="thumbnail_img" src="placeholder.png">
+        </div>
     </div>
 </div>
 
+<!-- ダイアログ -->
+<div class="mdc-dialog">
+    <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface"
+             role="alertdialog"
+             aria-modal="true">
+            <div class="mdc-dialog__content" id="my-dialog-content">ホワイトリストに登録しました．移動します．</div>
+            <div class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" id="dialog_button"
+                        data-mdc-dialog-action="discard">
+                    <span class="mdc-button__label">OK</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class=" mdc-dialog__scrim">
+    </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress">
+    <div class="progress-message">ページの情報を確認中</div>
+    <div class="mdc-circular-progress mdc-circular-progress--indeterminate"
+         style="width:96px; height:96px;" role="progressbar">
+        <div class="mdc-circular-progress__determinate-container">
+            <svg class="mdc-circular-progress__determinate-circle-graphic" viewBox="0 0 48 48"
+                 xmlns="http://www.w3.org/2000/svg">
+                <circle class="mdc-circular-progress__determinate-track" cx="24" cy="24" r="18"
+                        stroke-width="4"/>
+                <circle class="mdc-circular-progress__determinate-circle" cx="24" cy="24" r="18"
+                        stroke-dasharray="113.097" stroke-dashoffset="113.097" stroke-width="4"/>
+            </svg>
+        </div>
+        <div class="mdc-circular-progress__indeterminate-container">
+            <div class="mdc-circular-progress__spinner-layer">
+                <div class="mdc-circular-progress__circle-clipper mdc-circular-progress__circle-left">
+                    <svg class="mdc-circular-progress__indeterminate-circle-graphic" viewBox="0 0 48 48"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="18" stroke-dasharray="113.097" stroke-dashoffset="56.549"
+                                stroke-width="4"/>
+                    </svg>
+                </div>
+                <div class="mdc-circular-progress__gap-patch">
+                    <svg class="mdc-circular-progress__indeterminate-circle-graphic" viewBox="0 0 48 48"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="18" stroke-dasharray="113.097" stroke-dashoffset="56.549"
+                                stroke-width="3.2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="confirm.js" type="module"></script>
 <script src="../whitelist/whitelist.js" type="module"></script>
 </body>
