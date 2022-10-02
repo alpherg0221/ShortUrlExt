@@ -80,6 +80,9 @@ func WgetNav(url string) {
 					urls = append(urls, arr[3])
 				}
 			}
+			if strings.Contains(line, "Saving to") {
+				break
+			}
 			if strings.Contains(line, "title") {
 				re := regexp.MustCompile(`<title>([^<]+?)</title>`)
 				matches := re.FindAllSubmatch([]byte(line), -1)
