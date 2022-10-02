@@ -60,6 +60,12 @@ async function setButton() {
         }
     };
 
+    // Blacklist_addボタン
+    const blacklistAddButton = document.getElementById("blacklist_add");
+    blacklistAddButton.onclick = async () => {
+        // blacklistに現在のdestのドメインをセット
+    }
+
     // Google透明性レポートボタン
     const googleButton = document.getElementById("google_button");
     googleButton.href = `https://transparencyreport.google.com/safe-browsing/search?url=${encodedDestURL}&hl=ja-jp`;
