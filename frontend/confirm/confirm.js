@@ -65,11 +65,11 @@ async function setButton() {
 
     // Norton Safe Webボタン
     const nortonButton = document.getElementById("norton_button");
-    nortonButton.href = `https://safeweb.norton.com/report/show?url=${encodedDest}`;
+    nortonButton.href = `https://safeweb.norton.com/report/show?url=${encodedDestURL}`;
 
     // Kaspersky Threat Intelligence Portalボタン
     const kasperskyButton = document.getElementById("kaspersky_button");
-    kasperskyButton.href = `https://opentip.kaspersky.com/${encodedDest}/?tab=lookup`
+    kasperskyButton.href = `https://opentip.kaspersky.com/${encodedDestURL}/?tab=lookup`
 
     // ダイアログを取得
     const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));

@@ -13,12 +13,31 @@
 
 html {
     height: auto;
-    width: 250px;
+    width: 400px;
 }
 
 body {
     background-color: var(--surface);
     color: var(--on_surface);
+}
+
+h4 {
+    text-align: center;
+}
+
+h5 {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+summary {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .button-container {
@@ -34,4 +53,9 @@ body {
 #whitelist_add {
     background-color: var(--secondary);
     width: 200px;
+    height: 60px;
+}
+
+#whitelist_add:disabled {
+    background-color: #999999;
 }

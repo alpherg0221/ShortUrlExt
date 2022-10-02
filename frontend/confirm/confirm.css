@@ -30,9 +30,10 @@ h1 {
 
 h5 {
     margin-top: 30px;
+    color: var(--secondary);
 }
 
-#description {
+h3, #description {
     word-break: break-all;
     margin-right: 50px;
 }
@@ -60,6 +61,7 @@ h5 {
 
 #thumbnail_img {
     margin-top: 30px;
+    width: 100%;
 }
 
 #dialog_button {
