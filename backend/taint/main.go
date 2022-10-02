@@ -1,14 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/chromedp/cdproto/network"
@@ -18,6 +22,7 @@ import (
 // https://github.com/chromedp/chromedp/issues/1053
 
 var (
+	fast      = flag.Bool("fast", false, "follow only http redirect")
 	headless  = flag.Bool("headless", true, "chrome visibility")
 	url       = flag.String("url", "", "url to visit")
 	thumbnail = flag.String("thumbnail", "", "set output filename if you want thumbnail. ignore except .png path")
@@ -31,11 +36,16 @@ func main() {
 		fmt.Fprintf(os.Stderr, "url is required")
 		os.Exit(1)
 	}
-	ChromeNav(*url, *headless)
+	if *fast {
+		WgetNav(*url)
+	} else {
+		ChromeNav(*url, *headless)
+	}
 }
 
 type Info struct {
-	Title string `json:"title"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 type Output struct {
 	Chains    []string `json:"chain"`
@@ -43,6 +53,64 @@ type Output struct {
 	Dst       string   `json:"dst"`
 	Thumbnail string   `json:"thumbnail"`
 	Info      Info     `json:"info"`
+}
+
+func WgetNav(url string) {
+
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("wget -O - '%s' --server-response 2>&1", url))
+
+	stdout, _ := cmd.StdoutPipe()
+	r := bufio.NewReader(stdout)
+	cmd.Start()
+
+	// 出力結果を取得（C言語系だとdo~whileみたいなことをしている)
+	line, err := r.ReadString('\n')
+
+	// EOFの場合は err == io.EOF となる
+	var urls []string
+	var title string
+	var description string
+	for err == nil || err != io.EOF {
+		// データがGET出来た場合、文字列に変換して表示
+		if len(line) > 0 {
+			line = line[:len(line)-1]
+			if strings.HasPrefix(line, "--") {
+				arr := strings.Split(line, " ")
+				if len(arr) == 4 {
+					urls = append(urls, arr[3])
+				}
+			}
+			if strings.Contains(line, "title") {
+				re := regexp.MustCompile(`<title>([^<]+?)</title>`)
+				matches := re.FindAllSubmatch([]byte(line), -1)
+				if len(matches) > 0 {
+					title = string(matches[0][1])
+				}
+			}
+			if strings.Contains(line, "meta"){
+				print(line)
+				re := regexp.MustCompile(`<meta name="[Dd]escription" content="([^"]+?)"/?>`)
+				matches := re.FindAllSubmatch([]byte(line), -1)
+				if len(matches) > 0 {
+					description = string(matches[0][1])
+				}
+			}
+		}
+
+		// 再び読み込む
+		line, err = r.ReadString('\n')
+	}
+
+	o, _ := json.Marshal(Output{
+		Chains: urls,
+		Src:    url,
+		Dst:    urls[len(urls)-1],
+		Info: Info{
+			Title:       title,
+			Description: description,
+		},
+	})
+	print(string(o))
 }
 
 func ChromeNav(url string, headless bool) {
