@@ -4,3 +4,4 @@ opencv-python
 requests
 google-cloud-firestore
 google-cloud-storage
+websockets

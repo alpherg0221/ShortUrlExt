@@ -15,11 +15,12 @@ def thumbnail_handler(token: str, size: int = 400):  # 引数はtoken(画像の�
     thumb_file = f"{token}_{size}.png"
     original = token + ".png"
 
-    timeout = 20  # sec
+    timeout = 60  # sec
     while not os.path.isfile(original):
         time.sleep(1)
         timeout -= 1
         if timeout == 0:
+            # TODO may bug
             return JSONResponse(status_code=404, content={"err": "file not found"})
 
     size = max(min(size, 100), 800)

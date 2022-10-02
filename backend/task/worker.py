@@ -6,27 +6,14 @@ from . import filestore
 from .task import Task, Worker
 from . import helper
 
+from .ws import wsTask
+from websocket import create_connection
 
-def work(worker_id, doc_id):
+import asyncio
 
-    # taskとして細かい部分を隠す
-    t = Task(worker_id, doc_id)
-    if not t.canObtainMutex():
-        return
 
-    # ここから先はmutexによるatmicを期待
-    print("working...", doc_id)
+def work(params):
 
-    # taskの情報を取得
-    task_info = t.detail()
-
-    # taskに引数が指定されていなかったらエラー
-    if not "params" in task_info:
-        t.failed("no params")
-        return
-
-    # taskの引数から重要なものがなくなっていたらエラー
-    params = json.loads(task_info["params"])
     if not "url" in params or not "thumbnail" in params:
         t.failed("invalid params")
         return
@@ -48,26 +35,18 @@ def work(worker_id, doc_id):
     if "thumbnail" in result:
         filestore.push(result["thumbnail"])
 
-    # 完了したことを通知
-    t.done(output)
-    print("done")
+    return output
 
 
 if __name__ == "__main__":
-
     ID = helper.ID()
     print(ID)
     w = Worker(ID)
 
-    try:
-        w.attach()
-        while True:
-            doc_id = Task.receive()
-            if len(doc_id) == 0:
-                continue
-            work(ID, doc_id)
+    HOST_ADDR = "ws://127.0.0.1/ws/test"
+    with wsTask(HOST_ADDR) as tasks:
 
-    except Exception as e:
-        print(e)
-    finally:
-        w.detach()
+        while True:
+            params = tasks.receive()
+            print(params)
+            tasks.done(work(params))
