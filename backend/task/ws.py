@@ -7,6 +7,7 @@ from queue import Queue
 import time
 import json
 
+
 class wsTask:
     def __init__(self, host):
         self.host = host
@@ -17,23 +18,16 @@ class wsTask:
         thread1.start()
 
     async def connnector(self):
-        async for websocket in websockets.connect(self.host):
-            try:
-                while True:
-                    data = await websocket.recv()
-                    self.chan.put(data)
-            except websockets.ConnectionClosed:
-                time.sleep(5)
-                continue
+        pass
 
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.close()
+    async def __exit__(self, exc_type, exc_value, traceback):
+        asyncio.run(self.close())
 
-    def close(self):
-        self.ws.close()
+    async def close(self):
+        await self.ws.close()
 
     def receive(self):
         message = self.chan.get()

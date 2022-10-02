@@ -6,27 +6,35 @@ import sys
 import base64
 import hashlib
 import json
-from task import task
 from task import filestore
 import re
 from fastapi.responses import JSONResponse
 
+from logic.ws import TaskQueue, Task
+from asyncio import Queue
+
 router = APIRouter()
+
 
 def isURL(url):
     # https://uibakery.io/regex-library/url-regex-python
     url_pattern = "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$"
     return re.match(url_pattern, 'https://uibakery.io') != None
 
+
 @router.get("/trace")
-def trace_handler(url):  # shortURLがくる
+async def trace_handler(url):  # shortURLがくる
     if not isURL(url):
         return JSONResponse(status_code=400, content={"err": "invalid url"})
     # ファイル名を用意する
     thumbnail = f"{hash(url)}"  # ハッシュ関数を作る
     # ブラウザ制御コマンドを実行する
-    t = task.Task()
-    completed = t.run({"url": url, "thumbnail": thumbnail})
+    task = Task({
+        "url": url,
+        "thumbnail": thumbnail
+    })
+    await TaskQueue.put(task)
+    completed = await task.wait()
     result = json.loads(completed["result"])
     if "thumbnail" in result:
         filestore.pull(result["thumbnail"])

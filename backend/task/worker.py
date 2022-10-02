@@ -10,13 +10,14 @@ from .ws import wsTask
 from websocket import create_connection
 
 import asyncio
+import websockets
+import time
 
 
 def work(params):
 
     if not "url" in params or not "thumbnail" in params:
-        t.failed("invalid params")
-        return
+        return {"err": "invalid params"}
 
     # 外部コマンドを実行して出力を得る
     output = subprocess.getoutput(
@@ -28,8 +29,7 @@ def work(params):
         result = json.loads(output)
     except:
         print(output)
-        t.failed("internal error")
-        return
+        return {"err": "internal server error"}
 
     # thumbnailはサーバーに送信しておく
     if "thumbnail" in result:
@@ -38,15 +38,23 @@ def work(params):
     return output
 
 
-if __name__ == "__main__":
+async def main():
     ID = helper.ID()
     print(ID)
     w = Worker(ID)
 
     HOST_ADDR = "ws://127.0.0.1/ws/test"
-    with wsTask(HOST_ADDR) as tasks:
 
-        while True:
-            params = tasks.receive()
-            print(params)
-            tasks.done(work(params))
+    async for websocket in websockets.connect(HOST_ADDR):
+        try:
+            print("established")
+            while True:
+                data = await websocket.recv()
+                params = json.loads(data)
+                await websocket.send(work(params))
+        except websockets.ConnectionClosed:
+            time.sleep(5)
+            continue
+
+if __name__ == "__main__":
+    asyncio.run(main())
