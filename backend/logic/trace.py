@@ -9,6 +9,8 @@ import json
 import re
 from fastapi.responses import JSONResponse
 
+from task import filestore
+
 from logic.ws import TaskQueue, Task
 from asyncio import Queue
 
