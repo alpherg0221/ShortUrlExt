@@ -33,18 +33,17 @@ async def trace_handler(url):  # shortURLがくる
         "thumbnail": thumbnail
     })
     await TaskQueue.put(task)
-    completed = await task.wait()
-    inf = json.loads(completed)
-    if "thumbnail" in inf:
-        filestore.pull(inf["thumbnail"])
+    result = await task.wait()
+    if "thumbnail" in result:
+        filestore.pull(result["thumbnail"])
 
-    print(inf)
-    if not ("src" in inf and "dst" in inf and "chain" in inf and "info" in inf):
+    print(result)
+    if not ("src" in result and "dst" in result and "chain" in result and "info" in result):
         return JSONResponse(status_code=500, content={"err": "internal server error"})
 
     # コマンドの出力をjsonの形式にする(outputの形式が分かり次第いろいろ変更)
     keys = ["from_url", "term_url", "chains", "thumbnail", "info"]
-    values = [inf["src"], inf["dst"], inf["chain"], thumbnail, inf["info"]]
+    values = [result["src"], result["dst"], result["chain"], thumbnail, result["info"]]
     output_dict = dict(zip(keys, values))
     return output_dict
 
