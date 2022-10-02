@@ -16,7 +16,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <h4>次のページを表示しますか？</h4>
+            <h3>次のページを表示しますか？</h3>
             <div class="button-container">
                 <button class="mdc-button mdc-button--raised" id="cancel">
                     <span class="mdc-button__ripple"></span>
@@ -35,36 +35,39 @@
                 </button>
             </div>
 
-            <h3>ページ情報</h3>
-            <h5>ページタイトル</h5>
-            <h3 id="title">&nbsp;</h3>
-            <h5>URL</h5>
-            <h3 id="dest">&nbsp;</h3>
+            <div class="mdc-card--outlined">
+                <h3>ページ情報</h3>
+                <h5>ページタイトル</h5>
+                <h4 id="title">&nbsp;</h4>
+                <h5>URL</h5>
+                <h4 id="dest">&nbsp;</h4>
 
-            <h5>ページの説明</h5>
-            <div id="description">&nbsp;</div>
-            <br>
+                <h5>ページの説明</h5>
+                <div id="description">&nbsp;</div>
+            </div>
         </div>
 
         <div class="col-md-6">
-            <h3>安全性チェック</h3>
-            <div class="security">
-                <a target="_blank" id="google_button">
-                    Google透明性レポート
-                    <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
-                </a>
-            </div>
-            <div class="security">
-                <a target="_blank" id="norton_button">
-                    Norton Safe Web
-                    <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
-                </a>
-            </div>
-            <div class="security">
-                <a target="_blank" id="kaspersky_button">
-                    Kaspersky Threat Intelligence Portal
-                    <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
-                </a>
+            <div class="mdc-card--outlined" style="padding: 20px;">
+                <h3>安全性チェック</h3>
+                <div class="security">
+                    <a target="_blank" id="google_button">
+                        Google透明性レポート
+                        <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
+                    </a>
+                </div>
+                <div class="security">
+                    <a target="_blank" id="norton_button">
+                        Norton Safe Web
+                        <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
+                    </a>
+                </div>
+                <div class="security">
+                    <a target="_blank" id="kaspersky_button">
+                        Kaspersky Threat Intelligence Portal
+                        <i class="material-icons mdc-chip__icon" aria-hidden="true">open_in_new</i>
+                    </a>
+                </div>
             </div>
 
             <img class="img-fluid img-thumbnail" id="thumbnail_img" src="placeholder.png">

@@ -33,7 +33,7 @@ h5 {
     color: var(--secondary);
 }
 
-h3, #description {
+h3, h4, #description {
     word-break: break-all;
     margin-right: 50px;
 }
@@ -44,19 +44,26 @@ h3, #description {
 
 #cancel {
     background-color: var(--outline);
-    margin-right: 30px;
-    width: 100px;
+    margin-right: 40px;
+    width: 110px;
 }
 
 #ok {
     background-color: var(--primary);
-    width: 100px;
+    width: 110px;
 }
 
 #whitelist_move {
     color: var(--primary);
     border-color: var(--primary);
+    width: 260px;
+}
+
+#blacklist_add {
+    color: var(--error);
+    border-color: var(--error);
     margin-bottom: 30px;
+    width: 260px;
 }
 
 #thumbnail_img {
@@ -102,4 +109,9 @@ a {
     font-weight: bold;
     text-align: center;
     top: 35%;
+}
+
+.mdc-card--outlined {
+    padding: 20px;
+    background-color: #DDDDDD;
 }
