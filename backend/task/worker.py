@@ -21,7 +21,7 @@ def work(params):
     print(datetime.datetime.now())
     # 外部コマンドを実行して出力を得る
     output = subprocess.getoutput(
-        f"./ipc/taint --url={params['url']} --thumbnail={params['thumbnail']}.png --width=1080 --height=1080")
+        f"./ipc/taint --fast --url={params['url']} --thumbnail={params['thumbnail']}.png --width=1080 --height=1080")
     result = None
 
     print(datetime.datetime.now())
@@ -35,7 +35,7 @@ def work(params):
 
     print(datetime.datetime.now())
     # thumbnailはサーバーに送信しておく
-    if "thumbnail" in result:
+    if "thumbnail" in result and result["thumbnail"] != None:
         filestore.push(result["thumbnail"])
 
     print(datetime.datetime.now())

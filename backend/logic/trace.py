@@ -36,7 +36,7 @@ async def trace_handler(url):  # shortURLがくる
     })
     await TaskQueue.put(task)
     result = await task.wait()
-    if "thumbnail" in result:
+    if "thumbnail" in result and result["thumbnail"] != None:
         filestore.pull(result["thumbnail"])
 
     print(result)

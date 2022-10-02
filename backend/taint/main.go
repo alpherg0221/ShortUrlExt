@@ -44,15 +44,15 @@ func main() {
 }
 
 type Info struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
 }
 type Output struct {
 	Chains    []string `json:"chain"`
 	Src       string   `json:"src"`
 	Dst       string   `json:"dst"`
-	Thumbnail string   `json:"thumbnail"`
-	Info      Info     `json:"info"`
+	Thumbnail *string  `json:"thumbnail"`
+	Info      *Info    `json:"info"`
 }
 
 func WgetNav(url string) {
@@ -87,8 +87,7 @@ func WgetNav(url string) {
 					title = string(matches[0][1])
 				}
 			}
-			if strings.Contains(line, "meta"){
-				print(line)
+			if strings.Contains(line, "meta") {
 				re := regexp.MustCompile(`<meta name="[Dd]escription" content="([^"]+?)"/?>`)
 				matches := re.FindAllSubmatch([]byte(line), -1)
 				if len(matches) > 0 {
@@ -105,9 +104,9 @@ func WgetNav(url string) {
 		Chains: urls,
 		Src:    url,
 		Dst:    urls[len(urls)-1],
-		Info: Info{
-			Title:       title,
-			Description: description,
+		Info: &Info{
+			Title:       &title,
+			Description: &description,
 		},
 	})
 	print(string(o))
@@ -187,9 +186,9 @@ func ChromeNav(url string, headless bool) {
 			Chains:    urls,
 			Src:       url,
 			Dst:       urls[len(urls)-1],
-			Thumbnail: *thumbnail,
-			Info: Info{
-				Title: title,
+			Thumbnail: thumbnail,
+			Info: &Info{
+				Title: &title,
 			},
 		})
 		println(string(o))
@@ -199,8 +198,8 @@ func ChromeNav(url string, headless bool) {
 		Chains: urls,
 		Src:    url,
 		Dst:    urls[len(urls)-1],
-		Info: Info{
-			Title: title,
+		Info: &Info{
+			Title: &title,
 		},
 	})
 	println(string(o))
