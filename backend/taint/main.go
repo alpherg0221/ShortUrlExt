@@ -21,6 +21,8 @@ var (
 	headless  = flag.Bool("headless", true, "chrome visibility")
 	url       = flag.String("url", "", "url to visit")
 	thumbnail = flag.String("thumbnail", "", "set output filename if you want thumbnail. ignore except .png path")
+	width     = flag.Int64("width", 1920, "width of thumbnail")
+	height    = flag.Int64("height", 1080, "height of thumbnail")
 )
 
 func main() {
@@ -86,7 +88,7 @@ func ChromeNav(url string, headless bool) {
 
 	var imageBuf []byte
 	err := chromedp.Run(ctx,
-		chromedp.EmulateViewport(1920, 1080), // 画質は一旦PC版フルスクリーンに固定
+		chromedp.EmulateViewport(*width, *height), // 画質は一旦PC版フルスクリーンに固定
 		chromedp.Navigate(url),
 		chromedp.WaitVisible(`html`, chromedp.ByQuery),
 		chromedp.FullScreenshot(&imageBuf, 300), // 品質はあまり影響がなさそう
