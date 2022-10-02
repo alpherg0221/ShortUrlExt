@@ -16,7 +16,7 @@ const whitelistAddButton = document.getElementById("whitelist_add");
 // whitelist_addボタンのテキスト
 const whitelistAddButtonText = document.getElementById("whitelist_add_text");
 
-if (await Whitelist.checkDomain(domain)) {
+if (await Whitelist.includeDomain(domain)) {
     whitelistAddButton.disabled = true;
     whitelistAddButtonText.innerText = "ホワイトリスト追加済み";
 }

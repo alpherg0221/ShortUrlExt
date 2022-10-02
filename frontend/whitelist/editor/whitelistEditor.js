@@ -13,19 +13,26 @@ window.addEventListener("DOMContentLoaded", async () => {
         let tr = document.createElement("tr");
         tr.id = `tr${i}`;
 
+        // タイトルを表示する
+        let tdTitle = document.createElement("td");
+        tdTitle.style.verticalAlign = "middle";
+        tdTitle.innerHTML = whitelist[i].title;
+
         // ドメイン名を表示する
-        let td_domain = document.createElement("td");
-        td_domain.style.verticalAlign = "middle";
-        td_domain.innerHTML = whitelist[i];
+        let tdDomain = document.createElement("td");
+        tdDomain.style.verticalAlign = "middle";
+        tdDomain.innerHTML = whitelist[i].domain;
+
         // trにtd要素を追加
-        tr.appendChild(td_domain);
+        tr.appendChild(tdTitle);
+        tr.appendChild(tdDomain);
 
         let button = await Button(
             "削除",
             "delete",
             () => {
                 // 内部のホワイトリストから削除
-                Whitelist.delete(whitelist[i]);
+                Whitelist.delete(whitelist[i].domain);
                 // 画面上から削除
                 let target = document.getElementById(`tr${i}`);
                 tbody.removeChild(target);

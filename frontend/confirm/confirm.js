@@ -26,7 +26,7 @@ const title = info["title"];
 const domain = (new URL(destURL)).hostname;
 
 // ホワイトリストに入っているか確認
-if (await Whitelist.checkDomain(domain)) {
+if (await Whitelist.includeDomain(domain)) {
     location.href = destURL;
 }
 
@@ -52,7 +52,7 @@ async function setButton() {
     whitelistMoveButton.onclick = async () => {
         // whitelistに現在のdestのドメインをセット
         await Whitelist.add(domain);
-        if ((await Whitelist.getWhitelist()).includes(domain)) {
+        if (await Whitelist.includeDomain(domain)) {
             dialog.open();
         } else {
             alert("登録に失敗しました");

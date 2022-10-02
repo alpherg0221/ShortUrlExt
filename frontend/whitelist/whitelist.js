@@ -15,7 +15,38 @@ export class Whitelist {
         // whitelistを取得
         const whitelist = await Whitelist.getWhitelist();
         // 取得したwhitelistに値が含まれていなければ追加
-        if (!whitelist.includes(newValue)) whitelist.push(newValue);
+        if (!whitelist.includes(newValue)) {
+            // ドメインのページを取得
+            const fetchData = await fetch(`http://${newValue}`);
+            // 404 Not Foundでなければページタイトルも一緒に保存
+            if (Math.floor(fetchData.status / 100) !== 4) {
+                // 文字コードを取得
+                const detected = window.Encoding.detect(new Uint8Array(await fetchData.clone().arrayBuffer()));
+                // 文字コードを変換
+                let charset = "";
+                switch (detected) {
+                    case "UTF8":
+                        charset = "UTF-8";
+                        break;
+                    case "SJIS":
+                        charset = "Shift_JIS";
+                        break;
+                    case "EUCJP":
+                        charset = "EUC-JP";
+                        break;
+                    case "JIS":
+                        charset = "ISO-2022-JP";
+                        break;
+                }
+                const decodedData = new TextDecoder(charset).decode(await fetchData.arrayBuffer());
+                const pageDom = new DOMParser().parseFromString(decodedData, 'text/html');
+                // ホワイトリストに追加
+                whitelist.push({"domain": newValue, "title": pageDom.title});
+            } else {
+                // ホワイトリストに追加
+                whitelist.push({"domain": newValue, "title": ""});
+            }
+        }
         // whitelistを更新
         await chrome.storage.local.set({"whitelist": whitelist});
     }
@@ -25,16 +56,16 @@ export class Whitelist {
         // whitelistを取得
         let whitelist = await Whitelist.getWhitelist();
         // 取得したwhitelistに値が含まれていれば削除
-        if (whitelist.includes(deleteValue)) whitelist = whitelist.filter(e => e !== deleteValue);
+        if (whitelist.some(e => e.domain === deleteValue)) whitelist = whitelist.filter(e => e.domain !== deleteValue);
         // whitelistを更新
         await chrome.storage.local.set({"whitelist": whitelist});
     }
 
     // whitelistに入っているか確認するメソッド
-    static async checkDomain(domain) {
+    static async includeDomain(domain) {
         // whitelistを取得
         let whitelist = await Whitelist.getWhitelist();
         // 取得したwhitelistに値が含まれていればtrue
-        return whitelist.includes(domain);
+        return whitelist.some(e => e.domain === domain);
     }
 }
