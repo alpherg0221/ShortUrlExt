@@ -93,7 +93,8 @@ class Task:
             if len(task) == 1:
                 result = db.collection("tasks").document(
                     task_id).get().to_dict()
-                Cache.store(cache_token, result)
+                if not "err" in result:
+                    Cache.store(cache_token, result)
                 return result
             sleep(0.5)
 

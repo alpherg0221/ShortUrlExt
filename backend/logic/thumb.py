@@ -1,10 +1,11 @@
 from fastapi import APIRouter
 from fastapi import FastAPI
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 import os
 import cv2
 import base64
 import math
+import time
 
 router = APIRouter()
 
@@ -12,15 +13,21 @@ router = APIRouter()
 @router.get("/thumbnail")
 def thumbnail_handler(token: str, size: int = 400):  # 引数はtoken(画像の識別子)と画像サイズ
     thumb_file = f"{token}_{size}.png"
+    original = token + ".png"
+
+    timeout = 20  # sec
+    while not os.path.isfile(original):
+        time.sleep(1)
+        timeout -= 1
+        if timeout == 0:
+            return JSONResponse(status_code=404, content={"err": "file not found"})
+
+    size = max(min(size, 100), 800)
 
     if not os.path.isfile(thumb_file):  # 画像がなければ生成する
-        original = token + ".png"
         img = cv2.imread(original)
         write_img_file(img, thumb_file, size)
-        #cv2.imwrite(thumb_file, img.resize(size))
     # ファイルを送る
-    # app = FastAPI()
-    # app.post(thumb_file)
     return FileResponse(thumb_file)
 
 
