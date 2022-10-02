@@ -27,10 +27,15 @@ TaskQueue = asyncio.Queue()
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
     await websocket.accept()
+    isClosed = False
     try:
         while True:
             task = await TaskQueue.get()
+            if isClosed:
+                await TaskQueue.put(task)
+                break
             await websocket.send_json(task.params)
             await task.done(await websocket.receive_json())
     except WebSocketDisconnect:
+        isClosed = True
         pass

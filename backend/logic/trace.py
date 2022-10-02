@@ -20,7 +20,7 @@ router = APIRouter()
 def isURL(url):
     # https://uibakery.io/regex-library/url-regex-python
     url_pattern = "^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$"
-    return re.match(url_pattern, 'https://uibakery.io') != None
+    return re.match(url_pattern, url) != None
 
 
 @router.get("/trace")
@@ -45,7 +45,8 @@ async def trace_handler(url):  # shortURLがくる
 
     # コマンドの出力をjsonの形式にする(outputの形式が分かり次第いろいろ変更)
     keys = ["from_url", "term_url", "chains", "thumbnail", "info"]
-    values = [result["src"], result["dst"], result["chain"], thumbnail, result["info"]]
+    values = [result["src"], result["dst"],
+              result["chain"], thumbnail, result["info"]]
     output_dict = dict(zip(keys, values))
     return output_dict
 
