@@ -1,5 +1,4 @@
 import {shortUrlRegExp} from "./shortUrlRegExp.js";
-import {Whitelist} from "./whitelist/whitelist.js";
 
 chrome.webRequest.onHeadersReceived.addListener(async details => {
     // 300番台かチェック
@@ -20,18 +19,8 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
                 await chrome.tabs.discard(tabBlocked.id);
             }
 
-            // Todo:絶対URLで取得する (現在は相対URLの場合もある)
-            // 遷移先URLを取得
-            let [dest] = details.responseHeaders.filter(header => header.name === "location");
-            let domain = (new URL(dest.value)).hostname;
-
-            if ((await Whitelist.getWhitelist()).includes(domain)) {
-                // whitelistに遷移先URLが含まれればそのまま遷移
-                await chrome.tabs.create({url: dest.value});
-            } else {
-                // whitelistに遷移先URLが含まれなければ確認ページを開く
-                await chrome.tabs.create({url: `./confirm/confirm.html#${dest.value}`});
-            }
+            // confirmページを開く
+            await chrome.tabs.create({url: `./confirm/confirm.html#${blockedUrl}`});
         }
     }
 }, {

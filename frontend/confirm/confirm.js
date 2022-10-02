@@ -2,24 +2,46 @@
 import {Whitelist} from "../whitelist/whitelist.js";
 
 // 遷移先URL
-const dest = window.location.hash.substring(1);
+const srcURL = window.location.hash.substring(1);
 // URLエンコードした遷移先URL
-const encodedDest = encodeURIComponent(dest);
+const encodedDest = encodeURIComponent(srcURL);
 
 // サークルインジケータ
 const circularProgress = document.querySelector('.progress');
 
+// thumbnailのトークン生成
+const thumbnailToken = await sha256(srcURL);
+
+// サムネイルの適用
+setThumbnail();
+
+// URLの確認
+const dest = await (await fetch(`http://35.213.23.228/trace?url=${encodedDest}`)).json();
+const destURL = dest["term_url"];
+const encodedDestURL = encodeURIComponent(destURL);
+const info = dest["info"];
+const title = info["title"];
+
+// destからドメインを取得
+const domain = (new URL(destURL)).hostname;
+
+// ホワイトリストに入っているか確認
+if (await Whitelist.checkDomain(domain)) {
+    location.href = destURL;
+}
+
 // ボタンの適用
 await setButton();
 
-setTimeout(() => {
-    circularProgress.remove();
-}, 4000);
+// 取得した情報の適用
+setInfo();
+
+circularProgress.remove();
 
 async function setButton() {
     // OKボタン
     const okButton = document.getElementById("ok");
-    okButton.onclick = () => window.location.href = dest;
+    okButton.onclick = () => window.location.href = destURL;
 
     // Cancelボタン
     const cancelButton = document.getElementById("cancel");
@@ -28,9 +50,6 @@ async function setButton() {
     // Whitelist_moveボタン
     const whitelistMoveButton = document.getElementById("whitelist_move");
     whitelistMoveButton.onclick = async () => {
-        // destからドメインを取得
-        const domain = (new URL(dest)).hostname;
-
         // whitelistに現在のdestのドメインをセット
         await Whitelist.add(domain);
         if ((await Whitelist.getWhitelist()).includes(domain)) {
@@ -42,7 +61,7 @@ async function setButton() {
 
     // Google透明性レポートボタン
     const googleButton = document.getElementById("google_button");
-    googleButton.href = `https://transparencyreport.google.com/safe-browsing/search?url=${encodedDest}&hl=ja-jp`;
+    googleButton.href = `https://transparencyreport.google.com/safe-browsing/search?url=${encodedDestURL}&hl=ja-jp`;
 
     // Norton Safe Webボタン
     const nortonButton = document.getElementById("norton_button");
@@ -55,8 +74,17 @@ async function setButton() {
     // ダイアログを取得
     const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
     dialog.listen('MDCDialog:closing', () => {
-        window.location.href = dest;
+        window.location.href = destURL;
     });
+
+    // サムネイル要素
+    const thumbnailImg = document.getElementById("thumbnail_img");
+    thumbnailImg.style.cursor = "pointer";
+    thumbnailImg.onclick = async () => {
+        thumbnailImg.src = `http://35.213.23.228/thumbnail?token=${thumbnailToken}&size=1200`;
+        thumbnailImg.style.cursor = "auto";
+        thumbnailImg.onclick = null;
+    };
 
     // Rippleの適用
     const Ripple = mdc.ripple.MDCRipple;
@@ -65,13 +93,26 @@ async function setButton() {
     Ripple.attachTo(whitelistMoveButton);
 }
 
+async function setThumbnail() {
+    // サムネイル要素
+    const thumbnailImg = document.getElementById("thumbnail_img");
+    thumbnailImg.src = `http://35.213.23.228/thumbnail?token=${thumbnailToken}&size=400`;
+}
+
 async function setInfo() {
     // ページタイトル要素
     const titleElem = document.getElementById("title");
+    titleElem.textContent = title;
     // URL要素
     const destElem = document.getElementById("dest");
+    destElem.textContent = destURL;
     // ページの説明要素
-    const deskElem = document.getElementById("description");
-    // サムネイル要素
-    const thumbnailImg = document.getElementById("thumbnail_img");
+    const descElem = document.getElementById("description");
+    descElem.textContent = "";
+}
+
+async function sha256(text) {
+    const data = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }

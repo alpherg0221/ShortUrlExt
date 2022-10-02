@@ -41,10 +41,6 @@ h5 {
     margin-top: 30px;
 }
 
-#whitelist_move {
-    margin-bottom: 30px;
-}
-
 #cancel {
     background-color: var(--outline);
     margin-right: 30px;
@@ -57,8 +53,9 @@ h5 {
 }
 
 #whitelist_move {
-    color: var(--secondary);
-    border-color: var(--secondary);
+    color: var(--primary);
+    border-color: var(--primary);
+    margin-bottom: 30px;
 }
 
 #thumbnail_img {

@@ -29,4 +29,12 @@ export class Whitelist {
         // whitelistを更新
         await chrome.storage.local.set({"whitelist": whitelist});
     }
+
+    // whitelistに入っているか確認するメソッド
+    static async checkDomain(domain) {
+        // whitelistを取得
+        let whitelist = await Whitelist.getWhitelist();
+        // 取得したwhitelistに値が含まれていればtrue
+        return whitelist.includes(domain);
+    }
 }
