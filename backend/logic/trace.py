@@ -6,7 +6,6 @@ import sys
 import base64
 import hashlib
 import json
-from task import filestore
 import re
 from fastapi.responses import JSONResponse
 
@@ -35,10 +34,9 @@ async def trace_handler(url):  # shortURLがくる
     })
     await TaskQueue.put(task)
     completed = await task.wait()
-    result = json.loads(completed["result"])
-    if "thumbnail" in result:
-        filestore.pull(result["thumbnail"])
-    inf = json.loads(completed["result"])
+    inf = json.loads(completed)
+    if "thumbnail" in inf:
+        filestore.pull(inf["thumbnail"])
 
     print(inf)
     if not ("src" in inf and "dst" in inf and "chain" in inf and "info" in inf):
