@@ -33,7 +33,7 @@ def work(worker_id, doc_id):
 
     # 外部コマンドを実行して出力を得る
     output = subprocess.getoutput(
-        f"./taint --url={params['url']} --thumbnail={params['thumbnail']}.png")
+        f"./ipc/taint --url={params['url']} --thumbnail={params['thumbnail']}.png --width=1080 --height=1080")
     result = None
 
     # jsonにパースできることを期待するので、うまく行かなければエラー
