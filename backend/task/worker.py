@@ -84,7 +84,7 @@ async def main():
                         await websocket.send(json.dumps({
                             "phase": "thumbnail",
                             "filename": result["thumbnail"],
-                            "data": b64
+                            "data": b64.decode()
                         }))
 
         except websockets.ConnectionClosed:
