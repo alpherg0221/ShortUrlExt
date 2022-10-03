@@ -11,6 +11,13 @@ whitelistEditButton.onclick = async () => {
     await chrome.tabs.create({url: '../whitelist/editor/whitelistEditor.html'});
 };
 
+// Blacklist_editボタン
+const blacklistEditButton = document.getElementById("blacklist_edit");
+blacklistEditButton.onclick = async () => {
+    // whitelistページに移動
+    await chrome.tabs.create({url: '../blacklist/editor/blacklistEditor.html'});
+};
+
 // whitelist_addボタン
 const whitelistAddButton = document.getElementById("whitelist_add");
 // whitelist_addボタンのテキスト
