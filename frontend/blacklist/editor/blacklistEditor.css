@@ -28,7 +28,8 @@ body {
 
 .table {
     margin-top: 50px;
-    border-color: #A0A0A0;
+    border-color: var(--on_surface_variant);
+    color: white;
 }
 
 .container {
