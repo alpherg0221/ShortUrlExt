@@ -3,11 +3,11 @@ import {shortUrlRegExp} from "./shortUrlRegExp.js";
 chrome.webRequest.onHeadersReceived.addListener(async details => {
     // 300番台かチェック
     if (Math.floor(details.statusCode / 100) === 3) {
-        // 現在のタブ (リダイレクトがブロックされた) を取得
-        let [tabBlocked] = await chrome.tabs.query({active: true, currentWindow: true});
-
         // ブロックされたURLを取得
         let blockedUrl = details.url;
+
+        // 現在のタブ (リダイレクトがブロックされた) を取得
+        let [tabBlocked] = await chrome.tabs.query({url: blockedUrl, currentWindow: true});
 
         // ブロックされたURLが短縮URLだった場合の処理
         if (shortUrlRegExp.test(blockedUrl)) {
