@@ -37,11 +37,7 @@ def format_json(token, src):
 
 
 @router.get("/detail")
-async def trace_handler(url):  # shortURLがくる
-    if not isURL(url):
-        return JSONResponse(status_code=400, content={"err": "invalid url"})
-    # ファイル名を用意する
-    token = f"{hash(url)}"  # ハッシュ関数を作る
+async def trace_handler(token):  # shortURLがくるhtt
 
     timeout = 30  # sec
     polling_interval = 0.25  # sec

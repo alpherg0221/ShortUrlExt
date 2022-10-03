@@ -2,18 +2,29 @@
 import subprocess
 import json
 
-# from . import filestore
-from . import helper
-
 import asyncio
 import websockets
 import time
 import datetime
 import base64
 
+import hashlib
+
+def ID():
+    import os
+    return f"{os.uname()[1]}-{random_str()}"
+
+
+def random_str():
+    return sha256(f'{datetime.datetime.now()}')[:10]
+
+
+def sha256(seed):
+    return hashlib.sha256(seed.encode()).hexdigest()
+
 
 async def main():
-    ID = helper.ID()
+    ID = ID()
     print(ID)
 
     HOST_ADDR = f"ws://mws2022.pfpfdev.net/ws/{ID}"
