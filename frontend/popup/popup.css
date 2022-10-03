@@ -50,6 +50,11 @@ summary {
     width: 200px;
 }
 
+#blacklist_edit {
+    background-color: var(--error);
+    width: 200px;
+}
+
 #whitelist_add {
     background-color: var(--secondary);
     width: 200px;

@@ -15,7 +15,7 @@ export class Whitelist {
         // whitelistを取得
         const whitelist = await Whitelist.getWhitelist();
         // 取得したwhitelistに値が含まれていなければ追加
-        if (!whitelist.includes(newValue)) {
+        if (!await Whitelist.includeDomain(newValue)) {
             // ドメインのページを取得
             const fetchData = await fetch(`http://${newValue}`);
             // 404 Not Foundでなければページタイトルも一緒に保存

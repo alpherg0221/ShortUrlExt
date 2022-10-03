@@ -1,5 +1,6 @@
 // #移行の文字列を取得
 import {Whitelist} from "../whitelist/whitelist.js";
+import {Blacklist} from "../blacklist/blacklist.js";
 
 // 遷移先URL
 const srcURL = window.location.hash.substring(1);
@@ -8,6 +9,10 @@ const encodedDest = encodeURIComponent(srcURL);
 
 // サークルインジケータ
 const circularProgress = document.querySelector('.progress');
+
+// ダイアログ
+const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
+const dialogContent = document.getElementById("my-dialog-content");
 
 // thumbnailのトークン生成
 const thumbnailToken = await sha256(srcURL);
@@ -31,6 +36,13 @@ if (await Whitelist.includeDomain(domain)) {
     location.href = destURL;
 }
 
+// ブラックリストに入っているか確認
+if (await Blacklist.includeDomain(domain)) {
+    dialogContent.innerHTML = "このページはブラックリストに入っています．確認ページを閉じます．";
+    dialog.listen('MDCDialog:closing', async () => await closeConfirmPage());
+    dialog.open()
+}
+
 // ボタンの適用
 await setButton();
 
@@ -52,11 +64,19 @@ async function setButton() {
     const whitelistMoveButton = document.getElementById("whitelist_move");
     whitelistMoveButton.onclick = async () => {
         // whitelistに現在のdestのドメインをセット
-        await Whitelist.add(domain);
-        if (await Whitelist.includeDomain(domain)) {
+        if (!await Blacklist.includeDomain(domain)) {
+            await Whitelist.add(domain);
+            if (!await Whitelist.includeDomain(domain)){
+                alert("登録に失敗しました");
+            }
+            dialogContent.innerHTML = "ホワイトリストに登録しました．移動します．";
+            dialog.listen('MDCDialog:closing', () => {
+                window.location.href = destURL;
+            });
             dialog.open();
         } else {
-            alert("登録に失敗しました");
+            dialogContent.innerHTML = "このページはブラックリストに登録されているため，ホワイトリストに登録できません．";
+            dialog.open();
         }
     };
 
@@ -64,6 +84,18 @@ async function setButton() {
     const blacklistAddButton = document.getElementById("blacklist_add");
     blacklistAddButton.onclick = async () => {
         // blacklistに現在のdestのドメインをセット
+        if (!await Whitelist.includeDomain(domain)) {
+            await Blacklist.add(domain);
+            if (!await Blacklist.includeDomain(domain)) {
+                alert("登録に失敗しました");
+            }
+            dialogContent.innerHTML = "ブラックリストに登録しました．確認ページを閉じます．";
+            dialog.listen('MDCDialog:closing', async () => await closeConfirmPage());
+            dialog.open()
+        } else {
+            dialogContent.innerHTML = "このページはホワイトリストに登録されているため，ブラックリストに登録できません．";
+            dialog.open();
+        }
     }
 
     // Google透明性レポートボタン
@@ -77,12 +109,6 @@ async function setButton() {
     // Kaspersky Threat Intelligence Portalボタン
     const kasperskyButton = document.getElementById("kaspersky_button");
     kasperskyButton.href = `https://opentip.kaspersky.com/${encodedDestURL}/?tab=lookup`
-
-    // ダイアログを取得
-    const dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
-    dialog.listen('MDCDialog:closing', () => {
-        window.location.href = destURL;
-    });
 
     // サムネイル要素
     const thumbnailImg = document.getElementById("thumbnail_img");
@@ -122,4 +148,9 @@ async function sha256(text) {
     const data = new TextEncoder().encode(text);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function closeConfirmPage() {
+    let [confirmPage] = await chrome.tabs.query({active: true, currentWindow: true});
+    await chrome.tabs.remove(confirmPage.id);
 }
