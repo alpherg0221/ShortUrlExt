@@ -5,6 +5,7 @@ import time
 import asyncio
 
 import sys
+import base64
 
 router = APIRouter()
 

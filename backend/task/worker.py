@@ -9,6 +9,7 @@ import asyncio
 import websockets
 import time
 import datetime
+import base64
 
 
 async def main():

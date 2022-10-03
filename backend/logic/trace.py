@@ -13,6 +13,7 @@ from task import filestore
 
 from logic.ws import TaskQueue, Task, FastCache
 from asyncio import Queue
+import asyncio
 
 router = APIRouter()
 
@@ -24,14 +25,14 @@ def isURL(url):
 
 
 def format_json(token, src):
-    if not ("src" in result and "dst" in result and "chain" in result and "info" in result):
+    if not ("src" in src and "dst" in src and "chain" in src and "info" in src):
         return {"err": "internal server error"}
     return {
-        "from_url": result["src"],
-        "term_url": result["dst"],
-        "chains": result["chain"],
+        "from_url": src["src"],
+        "term_url": src["dst"],
+        "chains": src["chain"],
         "thumbnail": token,
-        "info": result["info"]
+        "info": src["info"]
     }
 
 
