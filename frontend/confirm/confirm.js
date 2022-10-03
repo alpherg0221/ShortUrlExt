@@ -44,6 +44,55 @@ if (await Blacklist.includeDomain(domain)) {
     dialog.open()
 }
 
+// TODO: GSB 取ってくる処理
+const API_KEY = "AIzaSyDOAevlLjP864d5SRqJ_T8MqGo6LKos434";
+const requestBody = {
+    "client": {
+        "clientId": "mws2022",
+        "clientVersion": "1.0.0"
+    },
+    "threatInfo": {
+        "threatTypes": [
+            "THREAT_TYPE_UNSPECIFIED",
+            "MALWARE",
+            "SOCIAL_ENGINEERING",
+            "UNWANTED_SOFTWARE",
+            "POTENTIALLY_HARMFUL_APPLICATION",
+        ],
+        "platformTypes":    [
+            "PLATFORM_TYPE_UNSPECIFIED",
+            "WINDOWS",
+            "LINUX",
+            "ANDROID",
+            "OSX",
+            "IOS",
+            "ANY_PLATFORM",
+        ],
+        "threatEntryTypes": ["URL"],
+        "threatEntries": [
+            {"url": `${destURL}`},
+        ]
+    }
+};
+const gsbResponse = await fetch(`https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${API_KEY}`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(requestBody)
+});
+const gsbResponseJson = await gsbResponse.json();
+
+// TODO: 取ってきた
+const gsbIcon = document.getElementById("gsb");
+if (Object.keys(gsbResponseJson).length === 0 && gsbResponseJson.constructor === Object) {
+    gsbIcon.innerText = "done";
+    gsbIcon.style.color = "#34A853";
+} else {
+    gsbIcon.innerText = "warning";
+    gsbIcon.style.color = "#EA4335";
+}
+
 // ボタンの適用
 await setButton();
 
