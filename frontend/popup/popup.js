@@ -1,4 +1,5 @@
 import {Whitelist} from "../whitelist/whitelist.js";
+import {Blacklist} from "../blacklist/blacklist.js";
 
 // Rippleクラス
 const Ripple = mdc.ripple.MDCRipple;
@@ -36,5 +37,10 @@ Ripple.attachTo(whitelistAddButton);
 if (await Whitelist.includeDomain(domain)) {
     whitelistAddButton.disabled = true;
     whitelistAddButtonText.innerText = "ホワイトリスト追加済み";
+}
+
+if (await Blacklist.includeDomain(domain)) {
+    whitelistAddButton.disabled = true;
+    whitelistAddButtonText.innerText = "ブラックリスト追加済み"
 }
 
