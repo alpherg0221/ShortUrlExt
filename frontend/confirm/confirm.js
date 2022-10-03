@@ -27,6 +27,7 @@ const decodedDestURL = decodeURIComponent(destURL);
 const encodedDestURL = encodeURIComponent(destURL);
 const info = dest["info"];
 const title = info["title"];
+const description = info["description"];
 
 // destからドメインを取得
 const domain = (new URL(destURL)).hostname;
@@ -140,8 +141,8 @@ async function setInfo() {
     const destElem = document.getElementById("dest");
     destElem.textContent = decodedDestURL;
     // ページの説明要素
-    const descElem = document.getElementById("description");
-    descElem.textContent = "電気通信大学は、武蔵野の緑溢れる東京都調布市にある国立大学です。「総合コミュニケーション科学」の創造と「Unique & Exciting Campus」の実現を目指します。";
+    const descriptionElem = document.getElementById("description");
+    descriptionElem.textContent = description;
 }
 
 async function sha256(text) {
