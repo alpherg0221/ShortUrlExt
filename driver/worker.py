@@ -24,10 +24,10 @@ def sha256(seed):
 
 
 async def main():
-    ID = ID()
-    print(ID)
+    id = ID()
+    print(id)
 
-    HOST_ADDR = f"ws://mws2022.pfpfdev.net/ws/{ID}"
+    HOST_ADDR = f"ws://mws2022.pfpfdev.net/ws/{id}"
     # HOST_ADDR = f"ws://localhost/ws/{ID}"
 
     async for websocket in websockets.connect(HOST_ADDR):
