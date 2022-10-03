@@ -4,14 +4,14 @@ from fastapi.responses import JSONResponse
 import asyncio
 
 from helper.utils import format_json
-from helper.task import Task,TaskQueue
+from helper.task import Task, TaskQueue
 from helper.cache import DetailCache
 
 router = APIRouter()
 
 
 @router.get("/detail")
-async def trace_handler(token):  # shortURLがくるhtt
+async def trace_handler(token: str):  # shortURLがくるhtt
 
     timeout = 30  # sec
     polling_interval = 0.25  # sec
@@ -28,4 +28,3 @@ async def trace_handler(token):  # shortURLがくるhtt
         DetailCache.clear(token)
         return JSONResponse(status_code=500, content=msg)
     return msg
-

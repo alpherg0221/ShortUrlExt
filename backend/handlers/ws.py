@@ -38,7 +38,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                     try:
                         with open(data["filename"], "wb") as f:
                             f.write(base64.b64decode(data["data"].encode()))
-                    except:
+                    finally:
                         break
 
     except WebSocketDisconnect:
