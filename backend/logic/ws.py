@@ -33,13 +33,15 @@ class Cache:
     def exists(self, key):
         return f"{key}" in self.db
 
+    def clear(self, key):
+        del self.db[f"{key}"]
+
     def load(self, key):
         return self.db[f"{key}"]
 
 
 TaskQueue = asyncio.Queue()
 
-FastCache = Cache()
 DetailCache = Cache()
 
 
@@ -63,7 +65,6 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                     await task.done(data)
                     break
                 if data["phase"] == "fast":
-                    FastCache.store(task.token, data)
                     await task.done(data)
                 if data["phase"] == "detail":
                     DetailCache.store(task.token, data)

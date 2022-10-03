@@ -36,41 +36,26 @@ def format_json(token, src):
     }
 
 
-async def issue_task(task):
-    await TaskQueue.put(task)
-    return await task.wait()
-
-
-@router.get("/trace")
+@router.get("/detail")
 async def trace_handler(url):  # shortURLがくる
     if not isURL(url):
         return JSONResponse(status_code=400, content={"err": "invalid url"})
     # ファイル名を用意する
     token = f"{hash(url)}"  # ハッシュ関数を作る
-    # ブラウザ制御コマンドを実行する
-    task = Task(
-        token,
-        {
-            "url": url,
-            "thumbnail": token
-        })
 
-    processing = asyncio.create_task(issue_task(task))
+    timeout = 30  # sec
+    polling_interval = 0.25  # sec
+    counter = timeout / polling_interval
+    while not DetailCache.exists(token):
+        counter -= 1
+        await asyncio.sleep(polling_interval)
+        if counter <= 0:
+            return JSONResponse(status_code=404, content={"err": "not found"})
 
-    if DetailCache.exists(token):
-        msg = format_json(token, DetailCache.load(token))
-        print(msg)
-        if "err" in msg:
-            return JSONResponse(status_code=500, content=msg)
-        return msg
-
-    result = await processing
-
-    # コマンドの出力をjsonの形式にする(outputの形式が分かり次第いろいろ変更)
-
-    msg = format_json(token, result)
+    msg = format_json(token, DetailCache.load(token))
     print(msg)
     if "err" in msg:
+        DetailCache.clear(token)
         return JSONResponse(status_code=500, content=msg)
     return msg
 
