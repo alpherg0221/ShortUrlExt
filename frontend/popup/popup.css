@@ -1,4 +1,5 @@
 :root {
+    --mdc-theme-primary: #4355b9;
     --primary: #4355b9;
     --on_primary: #FFFFFF;
     --secondary: #006d41;
@@ -56,11 +57,14 @@ summary {
 }
 
 #whitelist_add {
-    background-color: var(--secondary);
+    color: var(--primary);
+    border-color: var(--primary);
     width: 200px;
     height: 60px;
 }
 
 #whitelist_add:disabled {
-    background-color: #999999;
+    color: #333333;
+    border-color: #333333;
+    background-color: #AAAAAA;
 }

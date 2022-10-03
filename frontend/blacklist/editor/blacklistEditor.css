@@ -1,13 +1,14 @@
 :root {
-    --primary: #4355b9;
-    --on_primary: #FFFFFF;
-    --secondary: #006d41;
-    --on_secondary: #FFFFFF;
-    --error: #ba1a1a;
-    --on_error: #ffffff;
-    --surface: #fefbff;
-    --on_surface: #1b1b1f;
-    --surface_variant: #e3e1ec;
+    --primary: #bac3ff;
+    --on_primary: #08218a;
+    --secondary: #6cdc9d;
+    --on_secondary: #003920;
+    --error: #ffb4ab;
+    --on_error: #690005;
+    --surface: #1b1b1f;
+    --on_surface: #e4e1e6;
+    --surface_variant: #46464f;
+    --on_surface_variant: #c7c5d0;
 }
 
 html, main {
@@ -31,8 +32,9 @@ body {
 }
 
 .container {
-    background-color: #e3e1ec;
-    width: 840px;
+    background-color: var(--surface_variant);
+    color: white;
+    width: 1200px;
     min-height: 100%;
     height: auto;
     padding-top: 30px;
