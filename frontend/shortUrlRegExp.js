@@ -1,1 +1,1 @@
-export const shortUrlRegExp = RegExp("https?://.{1,8}\\..{1,4}/.*");
+export const shortUrlRegExp = RegExp("^https?://.{1,8}\\..{1,4}/[a-zA-Z0-9]+$");
