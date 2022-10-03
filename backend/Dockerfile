@@ -26,16 +26,13 @@ RUN mv ssl-proxy-linux-amd64 ssl-proxy
 
 COPY main.py /app/
 
-COPY logic/ /app/logic
-COPY task/ /app/task
+COPY handlers/ /app/handlers
+COPY helper/ /app/helper
 
 # --- supervisorに関する設定
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # CMD ["/usr/bin/supervisord"]
-
-
-ENV GOOGLE_APPLICATION_CREDENTIALS /app/task/mws2022-cred.json
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
