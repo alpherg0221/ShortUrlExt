@@ -67,7 +67,7 @@ func WgetNav(url string) {
 	line, err := r.ReadString('\n')
 
 	// EOFの場合は err == io.EOF となる
-	var urls []string
+	urls := []string{url}
 	var title string
 	var description string
 	for err == nil || err != io.EOF {
@@ -141,7 +141,7 @@ func ChromeNav(url string, headless bool) {
 	eventCtx, cancelEvent := context.WithCancel(ctx)
 	defer cancelEvent()
 
-	urls := []string{}
+	urls := []string{url}
 	var requestID network.RequestID
 	chromedp.ListenTarget(eventCtx, func(ev interface{}) {
 		if ev, ok := ev.(*network.EventRequestWillBeSent); ok {

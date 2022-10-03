@@ -10,7 +10,8 @@ router = APIRouter()
 
 
 class Task:
-    def __init__(self, params: dict):
+    def __init__(self, token: str, params: dict):
+        self.token = token
         self.params = params
         self.event = asyncio.Queue()
 
@@ -21,7 +22,24 @@ class Task:
         return await self.event.get()
 
 
+class Cache:
+    def __init__(self):
+        self.db = {}
+
+    def store(self, key, value):
+        self.db[f"{key}"] = value
+
+    def exists(self, key):
+        return f"{key}" in self.db
+
+    def load(self, key):
+        return self.db[f"{key}"]
+
+
 TaskQueue = asyncio.Queue()
+
+FastCache = Cache()
+DetailCache = Cache()
 
 
 @router.websocket("/ws/{client_id}")
@@ -35,7 +53,30 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
                 await TaskQueue.put(task)
                 break
             await websocket.send_json(task.params)
-            await task.done(await websocket.receive_json())
+            while True:
+                data = await websocket.receive_json()
+                if not "phase" in data:
+                    await task.done(data)
+                    break
+                if "err" in data:
+                    await task.done(data)
+                    break
+                if data["phase"] == "fast":
+                    FastCache.store(task.token, data)
+                    await task.done(data)
+                if data["phase"] == "detail":
+                    DetailCache.store(task.token, data)
+                    if not("thumbnail" in data and f'{data["thumbnail"]}'.endswith(".png")):
+                        break
+                if data["phase"] == "thumbnail":
+                    if not("filename" in data and "data" in data):
+                        break
+                    try:
+                        with open(data["filename"], "wb") as f:
+                            f.write(base64.b64decode(s))
+                    except:
+                        break
+
     except WebSocketDisconnect:
         isClosed = True
         pass

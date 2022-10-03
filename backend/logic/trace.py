@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 
 from task import filestore
 
-from logic.ws import TaskQueue, Task
+from logic.ws import TaskQueue, Task, FastCache
 from asyncio import Queue
 
 router = APIRouter()
@@ -23,32 +23,55 @@ def isURL(url):
     return re.match(url_pattern, url) != None
 
 
+def format_json(token, src):
+    if not ("src" in result and "dst" in result and "chain" in result and "info" in result):
+        return {"err": "internal server error"}
+    return {
+        "from_url": result["src"],
+        "term_url": result["dst"],
+        "chains": result["chain"],
+        "thumbnail": token,
+        "info": result["info"]
+    }
+
+
+async def issue_task(task):
+    await TaskQueue.put(task)
+    return await task.wait()
+
+
 @router.get("/trace")
 async def trace_handler(url):  # shortURLがくる
     if not isURL(url):
         return JSONResponse(status_code=400, content={"err": "invalid url"})
     # ファイル名を用意する
-    thumbnail = f"{hash(url)}"  # ハッシュ関数を作る
+    token = f"{hash(url)}"  # ハッシュ関数を作る
     # ブラウザ制御コマンドを実行する
-    task = Task({
-        "url": url,
-        "thumbnail": thumbnail
-    })
-    await TaskQueue.put(task)
-    result = await task.wait()
-    if "thumbnail" in result and result["thumbnail"] != None:
-        filestore.pull(result["thumbnail"])
+    task = Task(
+        token,
+        {
+            "url": url,
+            "thumbnail": token
+        })
 
-    print(result)
-    if not ("src" in result and "dst" in result and "chain" in result and "info" in result):
-        return JSONResponse(status_code=500, content={"err": "internal server error"})
+    processing = asyncio.create_task(issue_task(task))
+
+    if FastCache.exists(token):
+        msg = format_json(token, FastCache.load(token))
+        print(msg)
+        if "err" in msg:
+            return JSONResponse(status_code=500, content=msg)
+        return msg
+
+    result = await processing
 
     # コマンドの出力をjsonの形式にする(outputの形式が分かり次第いろいろ変更)
-    keys = ["from_url", "term_url", "chains", "thumbnail", "info"]
-    values = [result["src"], result["dst"],
-              result["chain"], thumbnail, result["info"]]
-    output_dict = dict(zip(keys, values))
-    return output_dict
+
+    msg = format_json(token, result)
+    print(msg)
+    if "err" in msg:
+        return JSONResponse(status_code=500, content=msg)
+    return msg
 
 
 def hash(url):
