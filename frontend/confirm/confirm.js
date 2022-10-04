@@ -39,7 +39,7 @@ if (await Whitelist.includeDomain(domain)) {
 
 // ブラックリストに入っているか確認
 if (await Blacklist.includeDomain(domain)) {
-    dialogContent.innerHTML = "このページはブラックリストに入っています．確認ページを閉じます．";
+    dialogContent.innerHTML = "このページはブラックリスト登録済みのため，確認ページを閉じます<br>右上のポップアップからブラックリストを編集できます";
     dialog.listen('MDCDialog:closing', async () => await closeConfirmPage());
     dialog.open()
 }

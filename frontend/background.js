@@ -8,6 +8,10 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
 
         // 現在のタブ (リダイレクトがブロックされた) を取得
         let [tabBlocked] = await chrome.tabs.query({url: blockedUrl, currentWindow: true});
+        // 上手く取れなかったときに備えてもう一回
+        if (tabBlocked === void 0) {
+            [tabBlocked] = await chrome.tabs.query({url: blockedUrl, currentWindow: true});
+        }
 
         // ブロックされたURLが短縮URLだった場合の処理
         if (shortUrlRegExp.test(blockedUrl)) {
