@@ -36,7 +36,11 @@ func worker(tm *helper.TaskManager, conn *websocket.Conn) {
 	defer close(task.Done)
 	defer close(task.Err)
 	req, _ := proto.Marshal(task.Request)
-	conn.WriteMessage(websocket.BinaryMessage, req)
+	err := conn.WriteMessage(websocket.BinaryMessage, req)
+	if err != nil {
+		tm.Retry(task)
+		return
+	}
 	for {
 		_, _result, err := conn.ReadMessage()
 		if err != nil {

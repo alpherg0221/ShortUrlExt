@@ -1,11 +1,13 @@
 package browser
 
 import (
+	"bytes"
 	"context"
-	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
@@ -57,13 +59,26 @@ func (chrome Chrome) Navigate(_url *url.URL, opt Options) (Result, error) {
 	})
 	var title string
 	var imageBuf []byte
+	var _html string
+	var description string
 	err := chromedp.Run(ctx,
 		chromedp.EmulateViewport(opt.Int("width", 1920), opt.Int("width", 1080)), // 画質は一旦PC版フルスクリーンに固定
 		chromedp.Navigate(_url.String()),
 		chromedp.WaitVisible(`html`, chromedp.ByQuery),
-		chromedp.FullScreenshot(&imageBuf, 300), // 品質はあまり影響がなさそう
+		chromedp.OuterHTML("html", &_html, chromedp.ByQuery),
+		chromedp.CaptureScreenshot(&imageBuf), // 品質はあまり影響がなさそう
 		chromedp.Title(&title),
 	)
+
+	r := bytes.NewBuffer([]byte(_html))
+	doc, _ := goquery.NewDocumentFromReader(r)
+	doc.Find("meta").Each(func(_ int, s *goquery.Selection) {
+		content, _ := s.Attr("content")
+		name, _ := s.Attr("name")
+		if strings.ToLower(name) == "description" {
+			description = content
+		}
+	})
 
 	if err != nil {
 		return Result{}, err
@@ -74,10 +89,10 @@ func (chrome Chrome) Navigate(_url *url.URL, opt Options) (Result, error) {
 			FromURL:   _url.String(),
 			TermURL:   urls[len(urls)-1],
 			Chains:    urls,
-			Thumbnail: fmt.Sprintf("%s.png", thumbnail),
+			Thumbnail: thumbnail,
 			Info: SiteInfo{
 				Title:       title,
-				Description: "",
+				Description: description,
 			},
 			ThumbnailData: imageBuf,
 		}, nil
@@ -88,7 +103,7 @@ func (chrome Chrome) Navigate(_url *url.URL, opt Options) (Result, error) {
 		Chains:  urls,
 		Info: SiteInfo{
 			Title:       title,
-			Description: "",
+			Description: description,
 		},
 	}, nil
 }

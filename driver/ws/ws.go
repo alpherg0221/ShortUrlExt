@@ -41,7 +41,6 @@ func (ws *WebSocket) Connect() (err error) {
 				break
 			}
 			_, message, err := ws.conn.ReadMessage()
-			println("direct", string(message))
 			if err != nil {
 				ws.readErr <- err
 				return
@@ -75,7 +74,6 @@ func (ws *WebSocket) Read(p []byte) (n int, err error) {
 		for i := 0; i < n; i++ {
 			p[i] = data[i]
 		}
-		println("read", string(p))
 		return n, nil
 	case err := <-ws.readErr:
 		return 0, err

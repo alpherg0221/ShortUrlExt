@@ -59,6 +59,10 @@ func (tm *TaskManager) Handle(r *protobuf.Request) (*protobuf.Trace, error) {
 	}
 }
 
+func (tm *TaskManager) Retry(task Task) {
+	tm.queue <- task
+}
+
 func (tm *TaskManager) WaitQueue() Task {
 	return <-tm.queue
 }
@@ -67,6 +71,7 @@ func (tm *TaskManager) AddWorker(id string) error {
 	if _, exist := tm.workers[id]; exist {
 		return fmt.Errorf("duplicated id")
 	}
+	fmt.Printf("%d Workers ++\n", len(tm.workers))
 	tm.workers[id] = struct{}{}
 	return nil
 }
@@ -75,6 +80,7 @@ func (tm *TaskManager) RemoveWorker(id string) error {
 	if _, exist := tm.workers[id]; !exist {
 		return fmt.Errorf("id not found")
 	}
+	fmt.Printf("%d Workers --\n", len(tm.workers))
 	delete(tm.workers, id)
 	return nil
 }

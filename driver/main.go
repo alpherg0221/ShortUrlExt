@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"net/url"
 	"os"
 	"sync"
+	"time"
 
 	"example.com/driver/protobuf"
 	"example.com/driver/ws"
@@ -29,6 +29,7 @@ func main() {
 	}
 	for {
 		_main(websocketURL)
+		time.Sleep(10 * time.Second)
 	}
 }
 
@@ -37,7 +38,7 @@ func _main(websocketURL *url.URL) {
 	err := conn.Connect()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to connect: %s\n", err.Error())
-		os.Exit(1)
+		return
 	}
 	defer conn.Close()
 	println("connected")
@@ -63,7 +64,8 @@ func _main(websocketURL *url.URL) {
 			}
 			continue
 		}
-		fmt.Fprintf(os.Stdout, "%+v\n", req)
+
+		fmt.Fprintf(os.Stdout, "%s %+v\n", time.Now().Local().GoString(), &req)
 
 		mutex := sync.Mutex{}
 		wg := sync.WaitGroup{}
@@ -75,22 +77,20 @@ func _main(websocketURL *url.URL) {
 			result := &protobuf.Result{
 				Phase: "wget",
 				Error: ret.Error,
-				Data: &protobuf.Result_Trace{
-					Trace: &protobuf.Trace{
-						From:      ret.FromURL,
-						Term:      ret.TermURL,
-						Chains:    ret.Chains,
-						Thumnbail: false,
-						Info: &protobuf.Info{
-							Title:       ret.Info.Title,
-							Description: ret.Info.Description,
-						},
+				Trace: &protobuf.Trace{
+					From:      ret.FromURL,
+					Term:      ret.TermURL,
+					Chains:    ret.Chains,
+					Thumnbail: false,
+					Info: &protobuf.Info{
+						Title:       ret.Info.Title,
+						Description: ret.Info.Description,
 					},
 				},
 			}
-			fmt.Fprintf(os.Stdout, "%+v\n", result)
-			data, _ := json.Marshal(result)
+			fmt.Fprintf(os.Stdout, "\t%+v\n", result)
 			mutex.Lock()
+			data, _ := proto.Marshal(result)
 			_, err = conn.Write(data)
 			mutex.Unlock()
 			if err != nil {
@@ -106,22 +106,20 @@ func _main(websocketURL *url.URL) {
 			result := &protobuf.Result{
 				Phase: "chrome",
 				Error: ret.Error,
-				Data: &protobuf.Result_Trace{
-					Trace: &protobuf.Trace{
-						From:      ret.FromURL,
-						Term:      ret.TermURL,
-						Chains:    ret.Chains,
-						Thumnbail: ret.Thumbnail != "",
-						Info: &protobuf.Info{
-							Title:       ret.Info.Title,
-							Description: ret.Info.Description,
-						},
+				Trace: &protobuf.Trace{
+					From:      ret.FromURL,
+					Term:      ret.TermURL,
+					Chains:    ret.Chains,
+					Thumnbail: ret.Thumbnail != "",
+					Info: &protobuf.Info{
+						Title:       ret.Info.Title,
+						Description: ret.Info.Description,
 					},
 				},
 			}
-			fmt.Fprintf(os.Stdout, "%+v\n", result)
-			data, _ := json.Marshal(result)
+			fmt.Fprintf(os.Stdout, "\t%+v\n", result)
 			mutex.Lock()
+			data, _ := proto.Marshal(result)
 			_, err = conn.Write(data)
 			mutex.Unlock()
 			if err != nil {
@@ -129,16 +127,15 @@ func _main(websocketURL *url.URL) {
 			}
 
 			result = &protobuf.Result{
-				Phase: "thumnbail",
-				Data: &protobuf.Result_Thumbnail{
-					Thumbnail: &protobuf.Thumbnail{
-						Filename: ret.Thumbnail,
-						Data:     ret.ThumbnailData,
-					},
+				Phase: "thumbnail",
+				Thumbnail: &protobuf.Thumbnail{
+					Filename: ret.Thumbnail,
+					Data:     ret.ThumbnailData,
 				},
 			}
-			data, _ = json.Marshal(result)
+			fmt.Fprintf(os.Stdout, "\tthumbnail: %d\n", len(result.Thumbnail.Data))
 			mutex.Lock()
+			data, _ = proto.Marshal(result)
 			_, err = conn.Write(data)
 			mutex.Unlock()
 			if err != nil {
