@@ -12,7 +12,7 @@ const docTemplate = `{
         "title": "{{.Title}}",
         "contact": {},
         "license": {
-            "name": "undamoni"
+            "name": "undamoniZ"
         },
         "version": "{{.Version}}"
     },

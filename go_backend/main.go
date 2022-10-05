@@ -8,18 +8,30 @@ import (
 
 	_ "example.com/backend/docs"
 	"example.com/backend/handlers"
+	"golang.org/x/crypto/acme/autocert"
+
+	"flag"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
+var (
+	tls = flag.String("tls_domain", "", "domain to register let's encrypto")
+)
+
 // @title         backend
 // @version       1.0
-// @license.name  undamoni
+// @license.name  undamoniZ
 // @BasePath      /
 func main() {
 	e := echo.New()
+	if len(*tls) != 0 {
+		e.AutoTLSManager.HostPolicy = autocert.HostWhitelist(*tls)
+		e.AutoTLSManager.Cache = autocert.DirCache(".cache")
+		// e.Pre(middleware.HTTPSWWWRedirect())
+	}
 
 	e.GET("/docs/*", echoSwagger.WrapHandler)
 	e.GET("/trace", trace)
@@ -29,7 +41,12 @@ func main() {
 
 	e.Use(middleware.Logger())
 
-	e.Logger.Fatal(e.Start(":80"))
+	if len(*tls) != 0 {
+		e.Logger.Fatal(e.StartAutoTLS(":443"))
+	}else{
+		e.Logger.Fatal(e.Start(":80"))
+	}
+
 }
 
 // @Summary Trace URL from safe machines

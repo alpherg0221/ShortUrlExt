@@ -27,6 +27,7 @@ func NewWebSocket(endpoint *url.URL) *WebSocket {
 
 func (ws *WebSocket) Connect() (err error) {
 	var resp *http.Response
+	websocket.DefaultDialer.
 	ws.conn, resp, err = websocket.DefaultDialer.Dial(ws.Endpoint.String(), nil)
 	if err != nil {
 		if err == websocket.ErrBadHandshake {
