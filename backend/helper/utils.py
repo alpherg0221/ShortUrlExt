@@ -1,6 +1,7 @@
 import hashlib
 import re
 
+
 def sha256(url):
     return hashlib.sha256(url.encode()).hexdigest()
 
@@ -12,12 +13,22 @@ def is_url(url):
 
 
 def format_json(token, src):
-    if not ("src" in src and "dst" in src and "chain" in src and "info" in src):
+    if not ("from_url" in src and "term_url" in src and "chains" in src and "info" in src):
         return {"err": "internal server error"}
     return {
-        "from_url": src["src"],
-        "term_url": src["dst"],
-        "chains": src["chain"],
+        "from_url": src["from_url"],
+        "term_url": src["term_url"],
+        "chains": src["chains"],
         "thumbnail": token,
         "info": src["info"]
     }
+
+
+def remove_empty(obj: dict):
+    dels = []
+    for key in obj.keys():
+        if obj[key] == "":
+            dels.append(key)
+    for d in dels:
+        del obj[d]
+    return obj
