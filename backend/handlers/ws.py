@@ -7,8 +7,14 @@ from helper.cache import DetailCache
 from helper.task import TaskQueue
 from helper.utils import remove_empty
 
+from protobuf.task_pb2 import Request
+
+req = Request()
+print(req.phase)
+
 router = APIRouter()
 
+task_pb2
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):

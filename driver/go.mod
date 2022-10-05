@@ -6,6 +6,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20220827030233-358ed4af73cf
 	github.com/chromedp/chromedp v0.8.5
 	github.com/gorilla/websocket v1.5.0
+	google.golang.org/protobuf v1.28.1
 )
 
 require (

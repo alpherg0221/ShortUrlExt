@@ -8,8 +8,9 @@ import (
 	"os"
 	"sync"
 
-	"example.com/driver/browser"
+	"example.com/driver/protobuf"
 	"example.com/driver/ws"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -48,16 +49,14 @@ func _main(websocketURL *url.URL) {
 			break
 		}
 
-		req := Request{}
-		err = json.Unmarshal(buf[:n], &req)
+		req := protobuf.Request{}
+		err = proto.Unmarshal(buf[:n], &req)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "invalid request: %s %s\n", string(buf), err.Error())
-			result := Result{
-				Result: browser.Result{
-					Error: "invalid request",
-				},
+			result := &protobuf.Result{
+				Error: "invalid request",
 			}
-			data, _ := json.Marshal(result)
+			data, _ := proto.Marshal(result)
 			_, err = conn.Write(data)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "failed to write: %s\n", err.Error())
@@ -72,9 +71,22 @@ func _main(websocketURL *url.URL) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			ret := driver("wget", req.URL, req.Thumbnail)
-			result := Result{
-				ret, "fast", "",
+			ret := driver("wget", req.Url, req.Thumbnail)
+			result := &protobuf.Result{
+				Phase: "wget",
+				Error: ret.Error,
+				Data: &protobuf.Result_Trace{
+					Trace: &protobuf.Trace{
+						From:      ret.FromURL,
+						Term:      ret.TermURL,
+						Chains:    ret.Chains,
+						Thumnbail: false,
+						Info: &protobuf.Info{
+							Title:       ret.Info.Title,
+							Description: ret.Info.Description,
+						},
+					},
+				},
 			}
 			fmt.Fprintf(os.Stdout, "%+v\n", result)
 			data, _ := json.Marshal(result)
@@ -90,15 +102,21 @@ func _main(websocketURL *url.URL) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			ret := driver("chrome", req.URL, req.Thumbnail)
-			result := Result{
-				Phase: "detail",
-				Result: browser.Result{
-					FromURL:   ret.FromURL,
-					TermURL:   ret.TermURL,
-					Chains:    ret.Chains,
-					Info:      ret.Info,
-					Thumbnail: ret.Thumbnail,
+			ret := driver("chrome", req.Url, req.Thumbnail)
+			result := &protobuf.Result{
+				Phase: "chrome",
+				Error: ret.Error,
+				Data: &protobuf.Result_Trace{
+					Trace: &protobuf.Trace{
+						From:      ret.FromURL,
+						Term:      ret.TermURL,
+						Chains:    ret.Chains,
+						Thumnbail: ret.Thumbnail != "",
+						Info: &protobuf.Info{
+							Title:       ret.Info.Title,
+							Description: ret.Info.Description,
+						},
+					},
 				},
 			}
 			fmt.Fprintf(os.Stdout, "%+v\n", result)
@@ -110,12 +128,14 @@ func _main(websocketURL *url.URL) {
 				fmt.Fprintf(os.Stderr, "failed to write: %s\n", err.Error())
 			}
 
-			result = Result{
-				Phase: "thumbnail",
-				Result: browser.Result{
-					Thumbnail: ret.Thumbnail,
+			result = &protobuf.Result{
+				Phase: "thumnbail",
+				Data: &protobuf.Result_Thumbnail{
+					Thumbnail: &protobuf.Thumbnail{
+						Filename: ret.Thumbnail,
+						Data:     ret.ThumbnailData,
+					},
 				},
-				Data: ret.ThumbnailData,
 			}
 			data, _ = json.Marshal(result)
 			mutex.Lock()
@@ -127,15 +147,4 @@ func _main(websocketURL *url.URL) {
 		}()
 		wg.Wait()
 	}
-}
-
-type Request struct {
-	URL       string `json:"url"`
-	Thumbnail string `json:"thumbnail"`
-}
-
-type Result struct {
-	browser.Result
-	Phase string `json:"phase"`
-	Data  string `json:"data"`
 }

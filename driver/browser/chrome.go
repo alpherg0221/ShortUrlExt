@@ -2,7 +2,7 @@ package browser
 
 import (
 	"context"
-	"encoding/base64"
+	"fmt"
 	"net/url"
 	"time"
 
@@ -74,12 +74,12 @@ func (chrome Chrome) Navigate(_url *url.URL, opt Options) (Result, error) {
 			FromURL:   _url.String(),
 			TermURL:   urls[len(urls)-1],
 			Chains:    urls,
-			Thumbnail: thumbnail,
+			Thumbnail: fmt.Sprintf("%s.png", thumbnail),
 			Info: SiteInfo{
 				Title:       title,
 				Description: "",
 			},
-			ThumbnailData: base64.StdEncoding.EncodeToString(imageBuf),
+			ThumbnailData: imageBuf,
 		}, nil
 	}
 	return Result{

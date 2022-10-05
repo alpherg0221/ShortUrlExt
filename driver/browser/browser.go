@@ -71,7 +71,7 @@ type Result struct {
 	Chains        []string `json:"chains"`
 	Thumbnail     string   `json:"thumbnail"`
 	Info          SiteInfo `json:"info"`
-	ThumbnailData string   `json:"thumbnail_data"`
+	ThumbnailData []byte   `json:"thumbnail_data"`
 	Error         string   `json:"err"`
 }
 
