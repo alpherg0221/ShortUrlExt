@@ -1,0 +1,44 @@
+:root {
+    --mdc-theme-primary: #4355b9;
+    --primary: #4355b9;
+    --on_primary: #FFFFFF;
+    --secondary: #006d41;
+    --on_secondary: #FFFFFF;
+    --error: #ba1a1a;
+    --on_error: #ffffff;
+    --surface: #fefbff;
+    --on_surface: #1b1b1f;
+    --surface_variant: #e3e1ec;
+    --outline: #767680;
+}
+
+html {
+    height: 437px;
+    width: 400px;
+}
+
+#desc {
+    margin-bottom: 15px;
+}
+
+#save {
+    background-color: var(--primary);
+}
+
+#default {
+    color: var(--secondary);
+    border-color: var(--secondary);
+    margin-right: 15px;
+}
+
+#container {
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+    margin-top: 50px;
+}
+
+.button-container {
+    margin-top: 20px;
+}

@@ -68,3 +68,9 @@ summary {
     border-color: #333333;
     background-color: #AAAAAA;
 }
+
+#change_server {
+    color: var(--secondary);
+    border-color: var(--secondary);
+    width: 200px;
+}

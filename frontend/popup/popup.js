@@ -44,3 +44,9 @@ if (await Blacklist.includeDomain(domain)) {
     whitelistAddButtonText.innerText = "ブラックリスト追加済み"
 }
 
+// change_serverボタン
+const changeServerButton = document.getElementById("change_server");
+changeServerButton.onclick = async () => {
+  location.href = "server/server.html";
+};
+

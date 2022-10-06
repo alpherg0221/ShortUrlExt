@@ -4,7 +4,7 @@ import {Blacklist} from "../blacklist/blacklist.js";
 
 class Confirm {
     // 初期化
-    constructor(dest) {
+    constructor(dest, serverName) {
         // サークルインジケータ
         this.circularProgress = document.querySelector('.progress');
         // ダイアログ
@@ -188,7 +188,7 @@ class Confirm {
         const thumbnailImg = document.getElementById("thumbnail_img");
         thumbnailImg.style.cursor = "pointer";
         thumbnailImg.onclick = async () => {
-            thumbnailImg.src = `https://mws2022.pfpfdev.net/thumbnail?token=${this.thumbnailToken}&size=1200`;
+            thumbnailImg.src = `https://${this.serverName}/thumbnail?token=${this.thumbnailToken}&size=1200`;
             thumbnailImg.style.cursor = "auto";
             thumbnailImg.onclick = null;
         };
@@ -217,7 +217,7 @@ class Confirm {
     async setThumbnail() {
         // サムネイル要素
         const thumbnailImg = document.getElementById("thumbnail_img");
-        thumbnailImg.src = `https://mws2022.pfpfdev.net/thumbnail?token=${this.thumbnailToken}&size=400`;
+        thumbnailImg.src = `https://${this.serverName}/thumbnail?token=${this.thumbnailToken}&size=400`;
     }
 
     // サークルインジケータを消す
@@ -239,6 +239,15 @@ class Confirm {
     }
 }
 
+// 保存されているサーバ名を取得
+async function getServerName() {
+    const serverObj = await chrome.storage.local.get("server");
+    if (serverObj.server === void 0) {
+        return defaultServerName;
+    }
+    return serverObj.server;
+}
+
 // main部分
 
 // 遷移先URL
@@ -246,8 +255,11 @@ const srcURL = window.location.hash.substring(1);
 // URLエンコードした遷移先URL
 const encodedDest = encodeURIComponent(srcURL);
 
+// サーバー名
+const serverName = await getServerName();
+
 // confirmクラス
-const confirm = new Confirm(encodedDest);
+const confirm = new Confirm(encodedDest, serverName);
 // URLの情報を取得
 const fetchUrlInfoResult = await confirm.fetchUrlInfo();
 
