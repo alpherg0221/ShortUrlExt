@@ -20,6 +20,10 @@ type Task struct {
 	cache map[string]protobuf.Trace
 }
 
+func (t *Task) DumpLog() {
+	DebugLog("")
+}
+
 var instance = &TaskManager{
 	queue:   make(chan Task, 10),
 	workers: make(map[string]struct{}),
@@ -63,8 +67,8 @@ func (tm *TaskManager) Retry(task Task) {
 	tm.queue <- task
 }
 
-func (tm *TaskManager) WaitQueue() Task {
-	return <-tm.queue
+func (tm *TaskManager) WaitQueue() chan Task {
+	return tm.queue
 }
 
 func (tm *TaskManager) AddWorker(id string) error {
@@ -88,7 +92,7 @@ func (tm *TaskManager) RemoveWorker(id string) error {
 func (tm *TaskManager) CacheStore(token string, trace *protobuf.Trace) {
 	clone := &protobuf.Trace{
 		From:      fmt.Sprint(trace.From),
-		Term:      fmt.Sprint(trace.From),
+		Term:      fmt.Sprint(trace.Term),
 		Chains:    []string{},
 		Thumnbail: trace.Thumnbail,
 		Info: &protobuf.Info{
@@ -97,7 +101,7 @@ func (tm *TaskManager) CacheStore(token string, trace *protobuf.Trace) {
 		},
 	}
 	for _, v := range trace.Chains {
-		clone.Chains = append(clone.Chains, v)
+		clone.Chains = append(clone.Chains, fmt.Sprint(v))
 	}
 	tm.cache[token] = clone
 }

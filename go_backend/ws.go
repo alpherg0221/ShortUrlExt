@@ -32,26 +32,37 @@ func ws(c echo.Context) error {
 }
 
 func worker(tm *helper.TaskManager, conn *websocket.Conn) {
-	task := tm.WaitQueue()
-	defer close(task.Done)
-	defer close(task.Err)
+	buf := make(chan []byte)
+	go func() {
+		_, d, _ := conn.ReadMessage()
+		buf <- d
+	}()
+	var task helper.Task
+	select {
+	case <-buf:
+		// 何も書く前に来たデータは破棄する
+		return
+	case task = <-tm.WaitQueue():
+	}
 	req, _ := proto.Marshal(task.Request)
 	err := conn.WriteMessage(websocket.BinaryMessage, req)
 	if err != nil {
 		tm.Retry(task)
 		return
 	}
+	defer close(task.Done)
+	defer close(task.Err)
+	// 1回目はGo routineの消費をする
+	_result := <-buf
 	for {
-		_, _result, err := conn.ReadMessage()
-		if err != nil {
-			task.Err <- fmt.Errorf("read error: %s", err.Error())
-			return
-		}
 		result := protobuf.Result{}
 		err = proto.Unmarshal(_result, &result)
 		if err != nil {
 			task.Err <- fmt.Errorf("parse error: %s %+v", err.Error(), &result)
 			return
+		}
+		if len(_result) < 10000 {
+			fmt.Fprintf(os.Stdout, "%+v\n", &result)
 		}
 		if result.Error != "" {
 			task.Err <- fmt.Errorf(result.Error)
@@ -64,6 +75,9 @@ func worker(tm *helper.TaskManager, conn *websocket.Conn) {
 				task.Err <- fmt.Errorf("invalid format[trace:text]")
 				return
 			}
+			if trace.From != task.Url {
+				continue
+			}
 			task.Done <- trace
 		case "chrome":
 			trace := result.GetTrace()
@@ -71,14 +85,10 @@ func worker(tm *helper.TaskManager, conn *websocket.Conn) {
 				task.Err <- fmt.Errorf("invalid format[trace:rich]")
 				return
 			}
-			tm.CacheStore(task.Thumbnail, trace)
-			if !trace.Thumnbail {
-				// thumbnailを取得しなかった場合は待たない
-				return
-			}
+			tm.CacheStore(helper.SHA256(trace.From), trace)
 		case "thumbnail":
 			thumbnail := result.GetThumbnail()
-			if thumbnail == nil {
+			if thumbnail == nil || thumbnail.Filename == "" {
 				task.Err <- fmt.Errorf("invalid format[thumbnail]")
 				return
 			}
@@ -90,6 +100,11 @@ func worker(tm *helper.TaskManager, conn *websocket.Conn) {
 			return
 		default:
 			task.Err <- fmt.Errorf("unknown phase")
+			return
+		}
+		_, _result, err = conn.ReadMessage()
+		if err != nil {
+			task.Err <- fmt.Errorf("read error: %s", err.Error())
 			return
 		}
 	}

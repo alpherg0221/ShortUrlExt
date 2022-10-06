@@ -26,6 +26,8 @@ var (
 // @license.name  undamoniZ
 // @BasePath      /
 func main() {
+	flag.Parse()
+
 	e := echo.New()
 	if len(*tls) != 0 {
 		e.AutoTLSManager.HostPolicy = autocert.HostWhitelist(*tls)
@@ -39,11 +41,13 @@ func main() {
 	e.GET("/thumbnail", thumbnail)
 	e.GET("/ws", ws)
 
-	e.Use(middleware.Logger())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `${time_rfc3339_nano} ${host} ${method} ${uri} ${status} ${header:my-header}` + "\n",
+	}))
 
 	if len(*tls) != 0 {
 		e.Logger.Fatal(e.StartAutoTLS(":443"))
-	}else{
+	} else {
 		e.Logger.Fatal(e.Start(":80"))
 	}
 
