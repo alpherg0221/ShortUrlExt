@@ -1,3 +1,4 @@
+driver
 taint
-taint.exe
+*.exe
 *.png

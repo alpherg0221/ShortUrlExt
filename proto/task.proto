@@ -1,0 +1,35 @@
+syntax = "proto3";
+package example.protobuf;
+
+option go_package = "example.com/driver/protobuf";
+
+message Request {
+    string url = 1;
+    string thumbnail = 2;
+}
+
+
+message Result {
+    string phase = 1;
+    string error = 2;
+    Trace trace = 3;
+    Thumbnail thumbnail = 4;
+}
+
+message Trace{
+    string from = 1;
+    string term = 2;
+    repeated string chains = 3;
+    bool thumnbail = 4;
+    Info info = 5; 
+}
+
+message Info{
+    string title = 1;
+    string description = 2;
+}
+
+message Thumbnail{
+    string filename = 1;
+    bytes data = 2;
+}

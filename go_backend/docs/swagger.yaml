@@ -1,0 +1,119 @@
+basePath: /
+definitions:
+  handlers.Result:
+    properties:
+      chains:
+        items:
+          type: string
+        type: array
+      from_url:
+        type: string
+      info:
+        $ref: '#/definitions/handlers.SiteInfo'
+      term_url:
+        type: string
+      thumbnail:
+        type: string
+    type: object
+  handlers.SiteInfo:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  main.ResponseErr:
+    properties:
+      error:
+        type: string
+    type: object
+info:
+  contact: {}
+  license:
+    name: undamoniZ
+  title: backend
+  version: "1.0"
+paths:
+  /detail:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: sha256(URL)
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ResponseErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ResponseErr'
+      summary: Get detail of previously traced URL
+  /thumbnail:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: sha256(URL)
+        in: query
+        name: token
+        required: true
+        type: string
+      - description: size of thumbnail(square, 100 < size < 800)
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ResponseErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ResponseErr'
+      summary: Get thumbnail of previously traced URL
+  /trace:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: URL to trace
+        in: query
+        name: url
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ResponseErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ResponseErr'
+      summary: Trace URL from safe machines
+swagger: "2.0"

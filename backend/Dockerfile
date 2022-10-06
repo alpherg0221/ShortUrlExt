@@ -28,6 +28,7 @@ COPY main.py /app/
 
 COPY handlers/ /app/handlers
 COPY helper/ /app/helper
+COPY protobuf/ /app/protobuf
 
 # --- supervisorに関する設定
 
