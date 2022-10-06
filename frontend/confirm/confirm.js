@@ -164,7 +164,7 @@ class Confirm {
                 }
                 this.dialogContent.innerHTML = "ブラックリストに登録しました．確認ページを閉じます．";
                 this.dialog.listen('MDCDialog:closing', async () => await this.closeConfirmPage());
-                this.dialog.open()
+                this.dialog.open();
             } else {
                 this.dialogContent.innerHTML = "このページはホワイトリストに登録されているため，ブラックリストに登録できません．";
                 this.dialog.open();
