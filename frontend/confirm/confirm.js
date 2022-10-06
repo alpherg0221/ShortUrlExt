@@ -21,11 +21,20 @@ const thumbnailToken = await sha256(srcURL);
 setThumbnail();
 
 // URLの確認
-const dest = await (await fetch(`http://35.213.23.228/trace?url=${encodedDest}`)).json();
-const destURL = dest["term_url"];
+const dest = await fetch(`https://mws2022.pfpfdev.net/trace?url=${encodedDest}`);
+
+// 500が返ってきたときの処理
+if (dest.status === 500) {
+    dialogContent.innerHTML = "エラーが発生しました．ページをリロードしてください．";
+    dialog.listen('MDCDialog:closing', async () => await reloadConfirmPage());
+    dialog.open()
+}
+
+const destJson = await dest.json();
+const destURL = destJson["term_url"];
 const decodedDestURL = decodeURIComponent(destURL);
 const encodedDestURL = encodeURIComponent(destURL);
-const info = dest["info"];
+const info = destJson["info"];
 const title = info["title"];
 const description = info["description"];
 
@@ -164,7 +173,7 @@ async function setButton() {
     const thumbnailImg = document.getElementById("thumbnail_img");
     thumbnailImg.style.cursor = "pointer";
     thumbnailImg.onclick = async () => {
-        thumbnailImg.src = `http://35.213.23.228/thumbnail?token=${thumbnailToken}&size=1200`;
+        thumbnailImg.src = `https://mws2022.pfpfdev.net/thumbnail?token=${thumbnailToken}&size=1200`;
         thumbnailImg.style.cursor = "auto";
         thumbnailImg.onclick = null;
     };
@@ -179,7 +188,7 @@ async function setButton() {
 async function setThumbnail() {
     // サムネイル要素
     const thumbnailImg = document.getElementById("thumbnail_img");
-    thumbnailImg.src = `http://35.213.23.228/thumbnail?token=${thumbnailToken}&size=400`;
+    thumbnailImg.src = `https://mws2022.pfpfdev.net/thumbnail?token=${thumbnailToken}&size=400`;
 }
 
 async function setInfo() {
@@ -203,4 +212,9 @@ async function sha256(text) {
 async function closeConfirmPage() {
     let [confirmPage] = await chrome.tabs.query({active: true, currentWindow: true});
     await chrome.tabs.remove(confirmPage.id);
+}
+
+async function reloadConfirmPage() {
+    let [confirmPage] = await chrome.tabs.query({active: true, currentWindow: true});
+    await chrome.tabs.reload(confirmPage.id);
 }
