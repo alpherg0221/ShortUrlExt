@@ -41,6 +41,25 @@ func main() {
 	e.GET("/thumbnail", thumbnail)
 	e.GET("/ws", ws)
 
+	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(
+		middleware.CORSConfig{
+			// Method
+			AllowMethods: []string{
+				http.MethodGet,
+			},
+			// Header
+			AllowHeaders: []string{
+				echo.HeaderOrigin,
+			},
+			// Origin
+
+			AllowOrigins: []string{
+				"http://localhost:8000",
+				"https://github.com",
+			},
+		}))
+
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `${time_rfc3339_nano} ${host} ${method} ${uri} ${status} ${header:my-header}` + "\n",
 	}))
