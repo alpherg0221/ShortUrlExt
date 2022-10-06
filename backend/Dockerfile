@@ -1,39 +1,24 @@
-FROM python:3.10.7-slim
+# FROM golang:1.19.2-bullseye
 
-# 重いのでまっさきにインストールしておく
-RUN apt-get update && apt-get install -y \
-    libopencv-dev 
+# COPY ./ /app
+# WORKDIR /app
 
-# --- ここから上はできるだけ編集しないこと推奨(RUNが複数に別れてしまうが...)
+# RUN go mod tidy
+# RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
 
-# --- Pythonの環境に関する設定
+FROM debian:bullseye
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-
-# --- その他の動作に関係するバイナリのインストール
-
-RUN apt-get install -y \
-    curl \
+RUN apt update && apt-get install -y \
     supervisor
 
-RUN curl -LJ "https://github.com/suyashkumar/ssl-proxy/releases/download/v0.2.7/ssl-proxy-linux-amd64.tar.gz" | tar xvz
-RUN mv ssl-proxy-linux-amd64 ssl-proxy
+COPY ./backend /app/app
 
-# --- メインのアプリケーションのインストール
+# COPY --from=0 /app/app /app/app
 
-COPY main.py /app/
-
-COPY handlers/ /app/handlers
-COPY helper/ /app/helper
-COPY protobuf/ /app/protobuf
-
-# --- supervisorに関する設定
+# # --- supervisorに関する設定
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# CMD ["/usr/bin/supervisord"]
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["/usr/bin/supervisord"]
