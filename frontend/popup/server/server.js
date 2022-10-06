@@ -5,6 +5,11 @@ backButton.onclick = () => {
     location.href = "../popup.html";
 };
 
+// checkアイコン
+const icon = document.getElementById("icon");
+// checkテキスト
+const checkText = document.getElementById("check_label");
+
 const serverInput = document.getElementById("server_input");
 serverInput.value = await getServerName();
 const serverIn = new mdc.textField.MDCTextField(document.querySelector(".mdc-text-field"));

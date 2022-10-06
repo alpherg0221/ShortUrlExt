@@ -50,3 +50,9 @@ changeServerButton.onclick = async () => {
   location.href = "server/server.html";
 };
 
+// githubへのリンク
+const githubA = document.getElementById("github");
+githubA.onclick = async () => {
+  await chrome.tabs.create({url: "https://github.com/alpherg0221/ShortUrlExt"});
+};
+

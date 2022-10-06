@@ -19,6 +19,8 @@ html {
 
 #desc {
     margin-bottom: 15px;
+    padding-left: 38px;
+    text-align: left;
 }
 
 #save {
@@ -31,14 +33,37 @@ html {
     margin-right: 15px;
 }
 
+#check {
+    margin-top: 60px;
+    cursor: pointer;
+}
+
+#check_button {
+    color: var(--outline);
+    margin-top: 40px;
+    font-size: 20px;
+}
+
+#icon {
+    font-size: 30px;
+    margin-bottom: 12px;
+    margin-right: 16px;
+}
+
 #container {
     text-align: center;
     vertical-align: middle;
     width: 100%;
     height: 100%;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .button-container {
     margin-top: 20px;
+}
+
+#check_desc {
+    margin-top: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
 }

@@ -74,3 +74,9 @@ summary {
     border-color: var(--secondary);
     width: 200px;
 }
+
+#github {
+    color: #4355b9;
+    text-decoration: underline;
+    cursor: pointer;
+}
