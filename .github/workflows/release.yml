@@ -1,0 +1,18 @@
+# This is a basic workflow to help you get started with Actions
+
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+      
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: make a zip file
+        run: |
+          cd output
+          zip release *.*
