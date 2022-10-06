@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Kanper Demo</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@3.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body id="body" class="overflow:auto">
+    <v-app id="app">
+
+        <!-- <v-main>
+            <v-container fill-height fluid>
+                <div width="100%" class="text-center">Kamper</div>
+                <v-row class="justify-center">
+                    <v-text-field v-model="url" label="First Name" solo></v-text-field>
+                </v-row>
+            </v-container>
+        </v-main> -->
+        <!-- <v-app-bar app color="white" flat>
+            <v-avatar :color="$vuetify.breakpoint.smAndDown ? 'grey darken-1' : 'transparent'" size="32"></v-avatar>
+
+            <v-tabs centered class="ml-n9" color="grey darken-1">
+                <v-tab v-for="link in links" :key="link">
+                    {{ link }}
+                </v-tab>
+            </v-tabs>
+
+            <v-avatar class="hidden-sm-and-down" color="grey darken-1 shrink" size="32">
+            </v-avatar>
+        </v-app-bar> -->
+
+        <v-main class="grey lighten-3">
+            <v-container class="mt-10">
+                <v-row>
+                    <v-col cols="12" sm="2">
+                        <v-card rounded="lg" min-height="268"
+                            @click="newTab('https://github.com/alpherg0221/ShortUrlExt')" class="pa-3">
+
+
+                            <v-img src="res/github.png" max-width="100px" class="mx-auto"></v-img>
+
+                            <v-card-title class="text-center">Github</v-card-title>
+
+                        </v-card>
+                    </v-col>
+
+                    <v-col cols="12" sm="8">
+                        <v-card min-height="70vh" rounded="lg" flat>
+                            <v-container fill-height fluid class="pa-10">
+
+                                <v-row class="justify-center"
+                                    style="font-family: 'Gemunu Libre', sans-serif;font-size: 70px;">
+                                    Kamper
+                                </v-row>
+
+                                <v-row class="justify-center" style="height:300px" class="pa-5">
+                                    <div class="eyes">
+                                        <div id="eye1" class="eye eye1"></div>
+                                        <div id="eye2" class="eye eye2"></div>
+                                    </div>
+                                </v-row>
+
+                                <v-row class="justify-center">
+                                    <v-text-field v-model="url" label="http://example.com/..." outlined></v-text-field>
+                                </v-row>
+                                <v-row class="justify-center">
+                                    <v-btn color="#555" @click="goto(`./confirm.html#${url}`)" dark>Check</v-btn>
+                                </v-row>
+
+                            </v-container>
+                        </v-card>
+                    </v-col>
+
+                    <v-col cols="12" sm="2">
+
+                        <v-card rounded="lg" min-height="268"
+                            @click="newTab('https://github.com/alpherg0221/ShortUrlExt/releases/tag/v1.0.0')"
+                            class="pa-3">
+
+
+                            <v-img src="res/chrome.png" max-width="100px" class="mx-auto"></v-img>
+
+                            <v-card-title class="text-center">Extension</v-card-title>
+
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-main>
+
+    </v-app>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+<style>
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    .eyes {
+        position: relative;
+        top: 10%;
+        /* left: 50%; */
+        display: flex;
+        width: 400px;
+        height: 200px;
+    }
+
+    .eyes:after {
+        content: '';
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 0;
+        padding: 50% 0 0 0;
+    }
+
+    .eye {
+        position: relative;
+        width: 50%;
+        height: auto;
+        border: 3px solid #000;
+        border-radius: 100%;
+        background: #fff;
+    }
+
+    .eye:after {
+        content: '';
+        position: absolute;
+        top: 35%;
+        left: 70%;
+        display: block;
+        width: 30%;
+        height: 30%;
+        border-radius: 100%;
+        background: #000;
+    }
+</style>
+
+
+<script>
+    const APP = new Vue({
+        el: '#app',
+        vuetify: new Vuetify({
+
+        }),
+        computed: {
+
+        },
+        data: () => ({
+            url: ""
+        }),
+        methods: {
+            goto(url) {
+                window.location.href = url
+            },
+            newTab(url) {
+                window.open(url, '_blank').focus();
+            }
+        },
+    })
+    const height = document.body.clientHeight / 2;
+    const width = document.body.clientWidth / 2;
+    const eye1 = document.querySelector('#eye1');
+    const eye2 = document.querySelector('#eye2');
+
+    function coords(x, y) {
+        if (x > 0 && y > 0) return Math.PI / 2 - Math.atan(x / y);
+        if (x < 0 && y > 0) return Math.PI / 2 - Math.atan(x / y);
+        if (x < 0 && y < 0) return Math.PI + Math.atan(y / x);
+        if (x > 0 && y < 0) return 3 * Math.PI / 2 - Math.atan(x / y);
+    }
+
+    function trackEyes(event) {
+        let x = event.x - width;
+        let y = event.y - height;
+        let degs1 = 57.2958 * coords(x + 100, y);
+        let degs2 = 57.2958 * coords(x - 100, y);
+        eye1.style.transform = `rotate(${degs1}deg)`;
+        eye2.style.transform = `rotate(${degs2}deg)`;
+    }
+
+    function init() {
+        document.addEventListener('mousemove', trackEyes);
+    }
+
+    init();
+</script>
+
+</html>
