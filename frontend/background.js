@@ -4,10 +4,10 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
     // 300番台かチェック
     if (Math.floor(details.statusCode / 100) === 3) {
         // ブロックされたURLを取得
-        let blockedUrl = details.url;
+        const blockedUrl = details.url;
 
         // 現在のタブ (リダイレクトがブロックされた) を取得
-        let [tabBlocked] = await chrome.tabs.query({url: blockedUrl, currentWindow: true});
+        const [tabBlocked] = await chrome.tabs.query({url: blockedUrl, currentWindow: true});
         // 上手く取れなかったときに備えてもう一回
         if (tabBlocked === void 0) {
             [tabBlocked] = await chrome.tabs.query({url: blockedUrl, currentWindow: true});
@@ -15,6 +15,8 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
 
         // ブロックされたURLが短縮URLだった場合の処理
         if (shortUrlRegExp.test(blockedUrl)) {
+            // confirmページを開く
+            await chrome.tabs.create({url: `./confirm/confirm.html#${blockedUrl}`});
             if (tabBlocked.url === "") {
                 // about:blankならタブを閉じる
                 await chrome.tabs.remove(tabBlocked.id);
@@ -22,9 +24,6 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
                 // それ以外なら読み込みを停止
                 await chrome.tabs.discard(tabBlocked.id);
             }
-
-            // confirmページを開く
-            await chrome.tabs.create({url: `./confirm/confirm.html#${blockedUrl}`});
         }
     }
 }, {
