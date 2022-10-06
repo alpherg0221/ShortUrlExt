@@ -10,6 +10,8 @@ class Confirm {
         // ダイアログ
         this.dialog = new mdc.dialog.MDCDialog(document.querySelector('.mdc-dialog'));
         this.dialogContent = document.getElementById("my-dialog-content");
+        // サーバ名
+        this.serverName = serverName;
         // dest
         this.dest = dest;
     }
@@ -20,7 +22,7 @@ class Confirm {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 7000);
         try {
-            this.dest = await fetch(`https://mws2022.pfpfdev.net/trace?url=${this.dest}`, {signal: controller.signal});
+            this.dest = await fetch(`https://${this.serverName}/trace?url=${this.dest}`, {signal: controller.signal});
         } catch (e) {
             this.dialogContent.innerHTML = "エラーが発生しました．ページをリロードします．";
             this.dialog.listen('MDCDialog:closing', async () => await this.reloadConfirmPage());
