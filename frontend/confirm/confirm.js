@@ -43,6 +43,7 @@ class Confirm {
     // 帰ってきた情報の取り出し
     async getUrlInfo() {
         this.destJson = await this.dest.json();
+        console.log(this.destJson);
         this.destURL = this.destJson["term_url"];
         this.decodedDestURL = decodeURIComponent(this.destURL);
         this.encodedDestURL = encodeURIComponent(this.destURL);
@@ -233,7 +234,8 @@ class Confirm {
     // ページをリロードする処理
     async reloadConfirmPage() {
         let [confirmPage] = await chrome.tabs.query({active: true, currentWindow: true});
-        await chrome.tabs.reload(confirmPage.id);
+        await chrome.tabs.create({url: location.href});
+        await chrome.tabs.remove(confirmPage.id);
     }
 }
 
