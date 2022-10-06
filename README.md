@@ -1,10 +1,27 @@
 # Kanper
-## What is this?
+
+## Table of Contents
+for general
+- About
+- 導入方法
+- 機能一覧
+
+for developers
+- リポジトリの構成
+- 構成技術
+- License
+
+for MWSCup
+- 審査基準について
+
+## About
 短縮URLを検知し，確認ページで移動先の情報を表示することでユーザを危険なページから保護するブラウザ拡張機能です．
 
-## How to Use
+> このツールは`MWSCup 2022 事前課題`として`Undanomi`が作成しました．
+
+## 導入方法
 1. このリポジトリのReleaseをクリック
-2. 一番上のzipファイルをダウンロードして解凍
+2. 一番上の最新バージョンのrelease.zipをダウンロードして解凍
 3. Chrome「設定」→「拡張機能」をクリックし，拡張機能編集ページを開く
 4. 右上のディベロッパーモードをオンにし，「パッケージ化されていない拡張機能を読み込む」をクリック
 5. 解凍したファイルを選択
@@ -47,3 +64,31 @@
   - 現在表示しているページをホワイトリストに追加します
 - サーバを変更
   - 遷移先ページの情報取得を行うサーバを変更することができます
+
+---
+for developers
+## リポジトリの構成
+```
+/
+|--- backend/
+|       遷移先ページの情報取得を行うAPI(Golang)
+|--- driver/
+|       情報取得のためにChromeを動作させるドライバ(Golang)
+|--- frontend/
+        Chromeの拡張機能(HTML/CSS/JS)
+```
+
+## 構成技術
+### 全体構成
+
+### backend
+
+### frontend
+- HTML/CSS/JSで実装
+- Material Designを使用
+
+### Licence
+
+---
+for MWSCup
+## 審査基準について
