@@ -17,13 +17,23 @@ class Confirm {
     // URLの情報を取得
     async fetchUrlInfo() {
         // URLの確認
-        this.dest = await fetch(`https://mws2022.pfpfdev.net/trace?url=${this.dest}`);
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 7000);
+        try {
+            this.dest = await fetch(`https://mws2022.pfpfdev.net/trace?url=${this.dest}`, {signal: controller.signal});
+        } catch (e) {
+            this.dialogContent.innerHTML = "エラーが発生しました．ページをリロードします．";
+            this.dialog.listen('MDCDialog:closing', async () => await this.reloadConfirmPage());
+            this.dialog.open();
+            return false;
+        }
+        clearTimeout(timer);
 
         // 500が返ってきたときの処理
         if (this.dest.status === 500) {
             this.dialogContent.innerHTML = "エラーが発生しました．ページをリロードします．";
             this.dialog.listen('MDCDialog:closing', async () => await this.reloadConfirmPage());
-            this.dialog.open()
+            this.dialog.open();
             return false;
         }
 
@@ -171,7 +181,7 @@ class Confirm {
 
         // Kaspersky Threat Intelligence Portalボタン
         const kasperskyButton = document.getElementById("kaspersky_button");
-        kasperskyButton.href = `https://opentip.kaspersky.com/${this.encodedDestURL}/?tab=lookup`
+        kasperskyButton.href = `https://opentip.kaspersky.com/${this.encodedDestURL}/?tab=lookup`;
 
         // サムネイル要素
         const thumbnailImg = document.getElementById("thumbnail_img");
