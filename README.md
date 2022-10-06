@@ -1,5 +1,7 @@
 # Kanper
 
+![kanper-demo](https://user-images.githubusercontent.com/41366495/194407259-08027246-0de6-4101-98c6-4af273220a10.gif)
+
 ## Table of Contents
 for general
 - About
@@ -16,6 +18,8 @@ for MWSCup
 
 ## About
 短縮URLを検知し，確認ページで移動先の情報を表示することでユーザを危険なページから保護するブラウザ拡張機能です．
+
+| TODO 背景含めもう少しボリュームを持たせたい
 
 > このツールは`MWSCup 2022 事前課題`として`Undanomi`が作成しました．
 
@@ -79,15 +83,37 @@ for developers
 ```
 
 ## 構成技術
+
 ### 全体構成
 
+![](https://user-images.githubusercontent.com/41366495/194413609-cdcba445-769c-437d-8743-5e4fa847c4cd.png)
+
 ### backend
+
+- Golang製
+  - 初期実装はPythonだった
+  - Pythonの速度面，パラダイム面の問題に直面し全ての実装を移行
+- Dockerで可搬性を確保
+  - セルフホスティングも可能な設計
+- 冗長化を前提としたスケール可能な設計
+  - ワーカーとなるプログラムはインターネット接続さえあれば動作
+- 動作はGCPのインスタンス x 2を使用
+  - APIサーバとワーカーインスタンス
+- 汚染を前提としたURLへのアクセス構成
+  - VM上で簡単にロールバックができるように
+- 高速なURL解決
+  - 全体では複雑な構造で速度がかなり低下する
+  - 並行処理，アクセス最適化による速度向上を実現
 
 ### frontend
 - HTML/CSS/JSで実装
 - Material Designを使用
 
-### Licence
+## 開発ロードマップ
+
+| TODO バックエンドはプライバシー・フロントエンドはどうするか
+
+## Licence
 
 ---
 for MWSCup
