@@ -1,7 +1,7 @@
 {
   "name": "Kanper",
   "short_name": "Kanper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "description": "短縮URLを検知し、確認ページで移動先の情報を表示することでユーザを危険なページから保護します。",
   "permissions": [
