@@ -64,7 +64,7 @@
                                 </v-row>
 
                                 <v-row class="justify-center" style="height:300px" class="pa-5">
-                                    <div class="eyes">
+                                    <div id="eyes" class="eyes">
                                         <div id="eye1" class="eye eye1"></div>
                                         <div id="eye2" class="eye eye2"></div>
                                     </div>
@@ -160,7 +160,7 @@
 
         },
         data: () => ({
-            url: "https://"
+            url: "https://bit.ly/2PpgmQq"
         }),
         methods: {
             goto(url) {
@@ -171,10 +171,18 @@
             }
         },
     })
-    const height = document.body.clientHeight / 2;
-    const width = document.body.clientWidth / 2;
-    const eye1 = document.querySelector('#eye1');
-    const eye2 = document.querySelector('#eye2');
+
+    let eyes, eyesRect, height, width, eye1, eye2;
+
+    const initPosition = () => {
+        eyes = document.querySelector('#eyes');
+        eyesRect = eyes.getBoundingClientRect();
+        height = eyesRect.y + eyesRect.height / 2;
+        width = eyesRect.x + eyesRect.width / 2;
+        eye1 = document.querySelector('#eye1');
+        eye2 = document.querySelector('#eye2');
+    }
+    window.onresize = initPosition
 
     function coords(x, y) {
         if (x > 0 && y > 0) return Math.PI / 2 - Math.atan(x / y);
@@ -194,6 +202,7 @@
 
     function init() {
         document.addEventListener('mousemove', trackEyes);
+        initPosition()
     }
 
     init();
