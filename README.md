@@ -114,12 +114,18 @@ for MWSCup
 
 ```
 /
+|--- .github/workflows/
+|       自動リリースのGithub Actionsの設定ファイル
 |--- backend/
 |       遷移先ページの情報取得を行うAPI(Golang)
+|--- docs/
+|       機能を試すためのページのコンテンツ(Github Pages)
 |--- driver/
 |       情報取得のためにChromeを動作させるドライバ(Golang)
 |--- frontend/
-        Chromeの拡張機能(HTML/CSS/JS)
+|       Chromeの拡張機能(HTML/CSS/JS)
+|--- proto/
+        Protocol Buffer
 ```
 
 ## 構成技術
