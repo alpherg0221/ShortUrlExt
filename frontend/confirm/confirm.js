@@ -45,7 +45,6 @@ class Confirm {
     // 帰ってきた情報の取り出し
     async getUrlInfo() {
         this.destJson = await this.dest.json();
-        console.log(this.destJson);
         this.destURL = this.destJson["term_url"];
         this.decodedDestURL = decodeURIComponent(this.destURL);
         this.encodedDestURL = encodeURIComponent(this.destURL);
@@ -161,12 +160,14 @@ class Confirm {
         blacklistAddButton.onclick = async () => {
             // blacklistに現在のdestのドメインをセット
             if (!await Whitelist.includeDomain(this.domain)) {
-                await Blacklist.add(this.domain);
-                if (!await Blacklist.includeDomain(this.domain)) {
-                    alert("登録に失敗しました");
-                }
                 this.dialogContent.innerHTML = "ブラックリストに登録しました．確認ページを閉じます．";
-                this.dialog.listen('MDCDialog:closing', async () => await this.closeConfirmPage());
+                this.dialog.listen('MDCDialog:closing', async () => {
+                    await Blacklist.add(this.domain);
+                    if (!await Blacklist.includeDomain(this.domain)) {
+                        alert("登録に失敗しました");
+                    }
+                    await this.closeConfirmPage()
+                });
                 this.dialog.open();
             } else {
                 this.dialogContent.innerHTML = "このページはホワイトリストに登録されているため，ブラックリストに登録できません．";
@@ -240,6 +241,9 @@ class Confirm {
         await chrome.tabs.remove(confirmPage.id);
     }
 }
+
+// デフォルトで接続するサーバ
+const defaultServerName = "mws2022.pfpfdev.net";
 
 // 保存されているサーバ名を取得
 async function getServerName() {

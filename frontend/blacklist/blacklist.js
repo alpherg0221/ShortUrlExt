@@ -16,10 +16,10 @@ export class Blacklist {
         const blacklist = await Blacklist.getBlacklist();
         // 取得したblacklistに値が含まれていなければ追加
         if (!await Blacklist.includeDomain(newValue)) {
-            // ドメインのページを取得
-            const fetchData = await fetch(`http://${newValue}`);
-            // 404 Not Foundでなければページタイトルも一緒に保存
-            if (Math.floor(fetchData.status / 100) !== 4) {
+            try {
+                // ドメインのページを取得
+                const fetchData = await fetch(`http://${newValue}`);
+                // ページ内容が取得できればページタイトルも一緒に保存
                 // 文字コードを取得
                 const detected = window.Encoding.detect(new Uint8Array(await fetchData.clone().arrayBuffer()));
                 // 文字コードを変換
@@ -42,13 +42,14 @@ export class Blacklist {
                 const pageDom = new DOMParser().parseFromString(decodedData, 'text/html');
                 // ブラックリストに追加
                 blacklist.push({"domain": newValue, "title": pageDom.title});
-            } else {
+            } catch (e) {
                 // ブラックリストに追加
                 blacklist.push({"domain": newValue, "title": ""});
+            } finally {
+                // blacklistを更新
+                await chrome.storage.local.set({"blacklist": blacklist});
             }
         }
-        // blacklistを更新
-        await chrome.storage.local.set({"blacklist": blacklist});
     }
 
     // blacklistから値を削除するメソッド

@@ -16,10 +16,10 @@ export class Whitelist {
         const whitelist = await Whitelist.getWhitelist();
         // 取得したwhitelistに値が含まれていなければ追加
         if (!await Whitelist.includeDomain(newValue)) {
-            // ドメインのページを取得
-            const fetchData = await fetch(`http://${newValue}`);
-            // 404 Not Foundでなければページタイトルも一緒に保存
-            if (Math.floor(fetchData.status / 100) !== 4) {
+            try {
+                // ドメインのページを取得
+                const fetchData = await fetch(`http://${newValue}`);
+                // ページ内容が取得できればページタイトルも一緒に保存
                 // 文字コードを取得
                 const detected = window.Encoding.detect(new Uint8Array(await fetchData.clone().arrayBuffer()));
                 // 文字コードを変換
@@ -42,13 +42,14 @@ export class Whitelist {
                 const pageDom = new DOMParser().parseFromString(decodedData, 'text/html');
                 // ホワイトリストに追加
                 whitelist.push({"domain": newValue, "title": pageDom.title});
-            } else {
+            } catch (e) {
                 // ホワイトリストに追加
                 whitelist.push({"domain": newValue, "title": ""});
+            } finally {
+                // whitelistを更新
+                await chrome.storage.local.set({"whitelist": whitelist});
             }
         }
-        // whitelistを更新
-        await chrome.storage.local.set({"whitelist": whitelist});
     }
 
     // whitelistから値を削除するメソッド
