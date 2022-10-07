@@ -114,12 +114,18 @@
 
 ```
 /
+|--- .github/workflows/
+|       自動リリースのGithub Actionsの設定ファイル
 |--- backend/
 |       遷移先ページの情報取得を行うAPI(Golang)
+|--- docs/
+|       機能を試すためのページのコンテンツ(Github Pages)
 |--- driver/
 |       情報取得のためにChromeを動作させるドライバ(Golang)
 |--- frontend/
-        Chromeの拡張機能(HTML/CSS/JS)
+|       Chromeの拡張機能(HTML/CSS/JS)
+|--- proto/
+        Protocol Buffer
 ```
 
 ## 構成技術
@@ -242,9 +248,9 @@ This software is released under the MIT License, see LICENSE.
 
 ### 継続性
 
-- 対応する短縮URLの種類の拡張
-- ホワイトリストの同期機能の追加
-- サンドボックスを複数用意することによる冗長性の向上
+- Github Releasesを用いてCDパイプラインを作成
+- READMEにて利用方法，改良方法を提示
+- README内のロードマップにて開発のこれまでと今後を可視化
 
 ### チームワーク
 
