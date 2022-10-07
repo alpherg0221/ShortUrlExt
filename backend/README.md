@@ -1,6 +1,7 @@
 # Backend
 
 ここではどのようにしてプライバシーに配慮＆信用できる結果を得ることができるかを説明します．
+
 なお，これの実現としてはサーバー運用が前提となります．
 
 ## 実現できること
@@ -67,7 +68,7 @@ Usage of ./driver:
     	Websocket endpoint URL
 ```
 
-WebSocketは`https://server.of.above/ws/SERVER_SECRET`
+WebSocketは`https://server.of.above/ws/SERVER_SECRET`で接続できます．
 
 あとは運用面に応じて適切にコマンドライン引数を設定し，実際に動作させます．
 
