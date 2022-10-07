@@ -160,14 +160,12 @@ class Confirm {
         blacklistAddButton.onclick = async () => {
             // blacklistに現在のdestのドメインをセット
             if (!await Whitelist.includeDomain(this.domain)) {
+                await Blacklist.add(this.domain, this.title);
+                if (!await Blacklist.includeDomain(this.domain)) {
+                    alert("登録に失敗しました");
+                }
                 this.dialogContent.innerHTML = "ブラックリストに登録しました．確認ページを閉じます．";
-                this.dialog.listen('MDCDialog:closing', async () => {
-                    await Blacklist.add(this.domain);
-                    if (!await Blacklist.includeDomain(this.domain)) {
-                        alert("登録に失敗しました");
-                    }
-                    await this.closeConfirmPage()
-                });
+                this.dialog.listen('MDCDialog:closing', async () => await this.closeConfirmPage() );
                 this.dialog.open();
             } else {
                 this.dialogContent.innerHTML = "このページはホワイトリストに登録されているため，ブラックリストに登録できません．";

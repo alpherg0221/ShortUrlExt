@@ -11,44 +11,14 @@ export class Blacklist {
     }
 
     // blacklistに値を追加するメソッド
-    static async add(newValue) {
+    static async add(domain, title="") {
         // blacklistを取得
         const blacklist = await Blacklist.getBlacklist();
         // 取得したblacklistに値が含まれていなければ追加
-        if (!await Blacklist.includeDomain(newValue)) {
-            try {
-                // ドメインのページを取得
-                const fetchData = await fetch(`http://${newValue}`);
-                // ページ内容が取得できればページタイトルも一緒に保存
-                // 文字コードを取得
-                const detected = window.Encoding.detect(new Uint8Array(await fetchData.clone().arrayBuffer()));
-                // 文字コードを変換
-                let charset = "";
-                switch (detected) {
-                    case "UTF8":
-                        charset = "UTF-8";
-                        break;
-                    case "SJIS":
-                        charset = "Shift_JIS";
-                        break;
-                    case "EUCJP":
-                        charset = "EUC-JP";
-                        break;
-                    case "JIS":
-                        charset = "ISO-2022-JP";
-                        break;
-                }
-                const decodedData = new TextDecoder(charset).decode(await fetchData.arrayBuffer());
-                const pageDom = new DOMParser().parseFromString(decodedData, 'text/html');
-                // ブラックリストに追加
-                blacklist.push({"domain": newValue, "title": pageDom.title});
-            } catch (e) {
-                // ブラックリストに追加
-                blacklist.push({"domain": newValue, "title": ""});
-            } finally {
-                // blacklistを更新
-                await chrome.storage.local.set({"blacklist": blacklist});
-            }
+        if (!await Blacklist.includeDomain(domain)) {
+            blacklist.push({"domain": domain, "title": title});
+            // blacklistを更新
+            await chrome.storage.local.set({"blacklist": blacklist});
         }
     }
 
