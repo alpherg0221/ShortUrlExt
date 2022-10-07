@@ -230,9 +230,9 @@ This software is released under the MIT License, see LICENSE.
 
 ### 継続性
 
-- 対応する短縮URLの種類の拡張
-- ホワイトリストの同期機能の追加
-- サンドボックスを複数用意することによる冗長性の向上
+- Github Releasesを用いてCDパイプラインを作成
+- READMEにて利用方法，改良方法を提示
+- README内のロードマップにて開発のこれまでと今後を可視化
 
 ### チームワーク
 
