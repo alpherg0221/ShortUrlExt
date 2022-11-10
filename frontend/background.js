@@ -30,6 +30,16 @@ chrome.webRequest.onHeadersReceived.addListener(async details => {
     'urls': ['<all_urls>'], 'types': ['main_frame']
 }, ['responseHeaders']);
 
+// インストール時のイベント
+chrome.runtime.onInstalled.addListener(async details => {
+    // デフォルトサーバに到達できない場合に警告ページを表示
+    try {
+        await fetch(`https://mws2022.pfpfdev.net/docs/`);
+    } catch (e) {
+        await chrome.tabs.create({url: './caution/caution.html'});
+    }
+});
+
 let lifeline;
 
 keepAlive();
