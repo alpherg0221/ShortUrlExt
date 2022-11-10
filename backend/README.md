@@ -1,6 +1,7 @@
 # Backend
 
 ここではどのようにしてプライバシーに配慮＆信用できる結果を得ることができるかを説明します．
+
 なお，これの実現としてはサーバー運用が前提となります．
 
 ## 実現できること
@@ -29,16 +30,17 @@
    2. `go build`：goのコンパイル
    3. `docker build -t shorturlext .`：docker imageの作成
 4. Dockerのイメージを起動します
-   1. `docker run -p 80:8080 -p 443:443 shorturlext`：
+   1. `docker run -p 80:8080 -p 443:443 -e TLS_DOMAIN="example.com" -e SERVER_SECRET="SERVER_SECRET" shorturlext`：
 
 > **注意**
 > - Dockerを用いてGo言語をコンパイルする場合はDockerfileの先頭の方をアンコメントし，マルチステージビルドを行います
 >   - 実行ファイルをコピーするコマンドも適切にアンコメントする必要があります
-> - Dockerのイメージを起動するにはsupervisord.confを適切に変更する必要があります
->   - supervisord.confのtls_domainを適切なドメインに設定します
+> - Dockerのイメージを起動するには引数の`TLS_DOMAIN`と`SERVER_SECRET`を変更する必要があります
 >   - ドメインの設定を省略するとTLSを利用しないHTTP/WSで動作しますが，拡張機能自体はHTTPSで接続を行うので動作に失敗します
 >   - サーバーは起動すると自動的にLet's Encryptを利用した証明書の取得を行います
 >   - 証明書の取得の際にドメインでサーバーのグローバルIPを解決できることが必要です
+> - SERVER_SECRETは不特定多数のワーカーが接続しないようにするものです
+>   - 漏洩しないように気をつける必要があります
 
 この作業が完了すると，SwaggerによるAPIアクセスが可能になります．`/docs/`にアクセスすることでSwaggerを見ることができます．
 ただしワーカーを繋がないとAPIは正しく動作しません．
@@ -65,6 +67,8 @@ Usage of ./driver:
   -ws string
     	Websocket endpoint URL
 ```
+
+WebSocketは`https://server.of.above/ws/SERVER_SECRET`で接続できます．
 
 あとは運用面に応じて適切にコマンドライン引数を設定し，実際に動作させます．
 

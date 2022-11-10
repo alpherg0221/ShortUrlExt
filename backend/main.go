@@ -18,7 +18,8 @@ import (
 )
 
 var (
-	tls = flag.String("tls_domain", "", "domain to register let's encrypto")
+	tls    = flag.String("tls_domain", "", "domain to register let's encrypto")
+	secret = flag.String("secret", "", "secret string to protect a server")
 )
 
 // @title         backend
@@ -39,7 +40,7 @@ func main() {
 	e.GET("/trace", trace)
 	e.GET("/detail", detail)
 	e.GET("/thumbnail", thumbnail)
-	e.GET("/ws", ws)
+	e.GET("/ws/"+*secret, ws)
 
 	e.Use(middleware.CORS())
 	e.Use(middleware.CORSWithConfig(
