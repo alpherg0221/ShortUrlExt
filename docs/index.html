@@ -77,6 +77,11 @@
                                     <v-btn color="#555" @click="goto(`./confirm.html#${url}`)" dark>Check</v-btn>
                                 </v-row>
 
+
+                                <v-row class="justify-center pt-5">
+                                    このサービスは停止しています．利用したい場合はGithubを介して開発者へ連絡をしてください．
+                                </v-row>
+
                             </v-container>
                         </v-card>
                     </v-col>
@@ -164,10 +169,12 @@
         }),
         methods: {
             goto(url) {
-                window.location.href = url
+                // window.location.href = url
+                alert("サービスは利用できません．")
             },
             newTab(url) {
-                window.open(url, '_blank').focus();
+                // window.open(url, '_blank').focus();
+                alert("サービスは利用できません．")
             }
         },
     })
